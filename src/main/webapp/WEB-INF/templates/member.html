@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="keywords" content="">
+<meta name="description" content="十七金融">
+<meta name="author" content="十七金融">
+<link href="../../css/css.css" rel="stylesheet">
+
+<link href="favicon.ico" rel="SHORTCUT ICON">
+<title>十七金融</title>
+</head>
+<body>
+<!--head-->
+
+<div class="header" th:replace="templates/header :: header"></div>
+
+<!--main-->
+<div class="wrap mt10 clearfix">
+  <div th:replace="templates/userleft :: userleft"></div>
+  
+  <div class="section fr">
+    <div class="pd20 bg-w bdr">
+      <div class="mem-hd clearfix"><span class="fr"><a th:href="@{/user/showMassage}"><em class="ico mail-ico"></em><b class="c"><span th:text="${session.msgnumber}"></span></b> 封未读信息</span> </a><span th:if="${session.user!=null}" th:text="${session.user.username}">您好！</span> <span th:if="${session.user==null}" > <a href="javascript:;" class="loginbtn" >登录</a></span>  <em class="ico Cup"></em>可用积分<b class="c" th:text="${session.user.yuemoney}"></b>分</div>
+      <div class="mt20 clearfix">
+        <div class="user-info fl">
+          <div class="user-img img"><img src="../../upload/img12.jpg"></div>
+          <div class="txt fl">
+            账户余额
+            <h1 class="Balance" th:if="${yuemoney!=0}" th:text="${#numbers.formatDecimal(yuemoney,0,'COMMA',2,'POINT')}"></h1>
+            <h1 class="Balance"  th:if="${yuemoney==0}" th:text="0.00"></h1>
+           	<span  th:if="${session.user.djmoney!=0}" th:text="'冻结资金'+${#numbers.formatDecimal(session.user.djmoney,0,'COMMA',2,'POINT')}+'元'"></span> 
+           	<span  th:if="${session.user.djmoney==0}" th:text="'冻结资金'+0.00+'元'"></span> 
+             <span  th:if="${yuemoney!=0}" th:text="'可用余额'+${#numbers.formatDecimal(yuemoney,0,'COMMA',2,'POINT')}+'元'"></span>
+              <span  th:if="${yuemoney==0}" th:text="'可用余额'+0.00+'元'"></span>
+          </div>
+          <div class="btnbox fl">
+            <a th:href="@{/user/showRecharge}" class="button ico Bid mt5">充值</a>
+            <a th:if="${session.user.yuemoney!=0}" th:href="@{/user/shoWdrawals}" class="button ico Bid mt5">提现</a>
+            <a th:if="${session.user.yuemoney==0}" class="button ico Repayment mt10">提现</a>
+          </div>
+        </div>
+        <!--账户安全-->
+        <div class="Security-Level fr">
+          账户安全：低
+          <p><span class="ico Level-process"><span class="ico Level-bar" style="width:28%"></span></span> 提升</p>
+          
+          <div class="Authenticated-bind mt10 clearfix">
+            <span class="item fl"><span class="Authenticated icon done"></span><br>已认证</span>
+            <span class="item fl"><span class="bind icon"></span><br>已绑定</span>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    
+    <div class="pd20 bg-w mt10 bdr">
+      <div class="crumbs"><span>我的投资</span><span class="gray">我的借款</span></div>
+      <div class="pd10">
+        <div class="Assets-hd">
+          债权资产 <span class="black">0.00</span>元<span class="o"><em class="icon Earn">赚</em><span>0.00</span>元</span><a href="#" class="Income-details">收益明细</a>
+        </div>
+        <div class="mt10 clearfix">
+          <div class="Assets-box fl">
+            <table class="Assets-tab">
+              <tr>
+                <th>本月应收款项</th>
+                <td><span class="count">0</span> 笔</td>
+                <td>0.00</td>
+              </tr>
+              <tr>
+                <th>已收款项</th>
+                <td><span class="count">0</span> 笔</td>
+                <td>0.00</td>
+              </tr>
+              <tr>
+                <th>待收款项</th>
+                <td><span class="count">0</span> 笔</td>
+                <td>0.00</td>
+              </tr>
+              <tr>
+                <th>投资收益</th>
+                <td><span class="count">0</span> 笔</td>
+                <td>0.00</td>
+              </tr>
+            </table>
+          </div>
+          <div class="Immediately-bid fr">
+            本月无收益？钱都拿来打酱油了？<br>赶快投标吧！<a th:href="@{/invest/showInvest}" class="button ico Bid mt10">立即投标</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="pd20 bg-w mt10 bdr">
+      <div class="crumbs"><span>交易记录</span></div>
+      <div class="pd10">
+        <div class="Record-hd"><b>交易类型</b> 
+        <a th:href="@{/user/showmember}" class="active">全部</a>
+        <a th:href="@{/user/showmember(state=1)}">投资</a>
+         <a th:href="@{/user/showmember(state=2)}">借款</a>
+        <a th:href="@{/user/showmember(state=3)}">充值</a>
+        <a th:href="@{/user/showmember(state=4)}">提现</a>
+        <a th:href="@{/user/showmember(state=5)}">还款</a>
+        <a th:href="@{/user/showmember(state=6)}">回款</a>
+        </div>
+        <div class="Record-box mt10">
+          <table class="Record-tab">
+            <tr>
+            <th width="180">时间</th>
+            <th width="130">交易类型</th>
+            <th width="150">交易详情</th>
+            <th width="155">操作金额</th>
+            <th>账户金额</th></tr>
+            <tr th:each="l,stat:${recordlist}" th:if="${stat.count} le 6">
+            <td th:text="${#dates.format(l.recorddate,'yyyy-MM-dd HH:mm:ss')}">2015-1-4 02:16:56</td>
+            <td >
+            	<span th:if="${l.recordtype=='1'}" th:text="投资"></span>
+            	<span th:if="${l.recordtype=='2'}" th:text="借款"></span>
+            	<span th:if="${l.recordtype=='3'}" th:text="充值"></span>
+            	<span th:if="${l.recordtype=='4'}" th:text="提现"></span>
+            	<span th:if="${l.recordtype=='5'}" th:text="还款"></span>
+            	<span th:if="${l.recordtype=='6'}" th:text="回款"></span>
+            </td>
+            
+            <td>
+            	<span th:if="${l.recordtype=='1'}" th:text="投资成功"></span>
+            	<span th:if="${l.recordtype=='2'}" th:text="借款成功"></span>
+            	<span th:if="${l.recordtype=='3'}" th:text="充值成功"></span>
+            	<span th:if="${l.recordtype=='4'}" th:text="提现成功"></span>
+            	<span th:if="${l.recordtype=='5'}" th:text="还款成功"></span>
+            	<span th:if="${l.recordtype=='6'}" th:text="回款成功"></span>
+			</td>
+            <td class="o" th:text="${l.recordmoney}">1.23元 </td>
+            <td th:if="${session.user.yuemoney==0}" th:text="0.00"></td>
+            <td th:if="${session.user.yuemoney!=0}" th:text="${#numbers.formatDecimal(session.user.yuemoney,0,'COMMA',2,'POINT')}"></td>
+            
+          </table>       
+        </div>
+        <p class="tr mt10">首页展示最近 6 条记录  <a th:href="@{/touzi/myJyList}">查看更多</a></p>
+      </div>
+    </div>
+    
+  </div>
+  
+</div>
+
+<div th:replace="templates/footer :: footer"></div>
+</body>
+</html>

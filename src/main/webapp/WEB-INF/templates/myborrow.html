@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="keywords" content="">
+<meta name="description" content="十七金融">
+<meta name="author" content="十七金融">
+<link href="../../css/css.css" rel="stylesheet">
+<script src="../../js/jquery-3.4.1.min.js"></script>
+<link href="favicon.ico" rel="SHORTCUT ICON">
+<title>十七金融</title>
+<style>
+        /*背景层*/
+        #popLayer {
+            display: none;
+            background-color: #B3B3B3;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 10;
+            -moz-opacity: 0.8;
+            opacity:.80;
+            filter: alpha(opacity=80);/* 只支持IE6、7、8、9 */
+        }
+ 
+        /*弹出层*/
+        #popBox {
+            display: none;
+            background-color: #FFFFFF;
+            z-index: 11;
+            width: 1200px;
+            height: 400px;
+            position:fixed;
+            top:0;
+            right:0;
+            left:0;
+            bottom:0;
+            margin:auto;
+        }
+ 
+        #popBox .close{
+            text-align: right;
+            margin-right: 5px;
+            background-color: #F8F8F8;
+        }
+ 
+        /*关闭按钮*/
+        #popBox .close a {
+            text-decoration: none;
+            color: #2D2C3B;
+        }
+ 
+    </style>
+</head>
+<body>
+<!--head-->
+<div class="header" th:replace="templates/header :: header"></div>
+
+<!--main-->
+<div class="wrap mt10 clearfix">
+   <div th:replace="templates/userleft :: userleft"></div>
+  
+  <div class="section fr">
+    <!--My loan-->
+    <div class="pd20 bg-w mt10 bdr">
+      <div class="crumbs"><span>我的申请</span></div>
+      <div class="membox">
+        <!-- <p class="f16 c333">借款项目：<span class="o">0</span>个，&nbsp;&nbsp;借款金额：<span class="o">0.00</span>元，&nbsp;&nbsp;已还款：<span class="o">0.00</span>元，&nbsp;&nbsp;剩余还款：<span class="o">0.00</span>元</p>
+        
+        <div class="My-investment mt20 clearfix">
+           <div class="item"><div class="box clearfix"><span class="count">0个</span><em class="invest ico1"></em>借款中款项目</div></div>
+           <div class="item"><div class="box clearfix"><span class="count">4个</span><em class="invest ico2"></em>还款中项目</div></div>
+           <div class="item"><div class="box clearfix"><span class="count ico3">1个</span><em class="invest ico3"></em>已还款项目</div></div>
+         </div> -->
+         
+        <!--Transaction Date-->
+        <div class="mt20 clearfix">
+          <div class="tit fl">交易日期</div>
+          <div class="Calendar fl">
+          <form id="form1" th:action="@{/borrow/myBorrow}" method="post">
+          <input type="text" readonly th:value="${session.bstart}" id="birthday" name="start" class="input_all i_time input_1" style="z-index:1000;position:relative; width:95px"/> - 
+          <input type="text" readonly th:value="${session.bend}" id="birthday2" name="end" class="input_all i_time input_1" style="z-index:1000;position:relative; width:95px"/>
+       
+          </form>
+          </div>
+          <script type="text/javascript">
+          $(function(){
+        	  
+          $(document).keyup(function(event){
+        	  if(event.keyCode == 13){
+        		return check();
+        	
+        	  }
+        	});
+          function check(){
+        	    var start=$("#birthday").val();
+        	    var end=$("#birthday2").val();
+        	    location.href="/borrow/myBorrow?start="+start+"&end="+end;
+        	   
+         	 } 
+          });
+          </script>
+          <div class="Options fl">
+	          <a th:href="@{/borrow/myBorrow}" class="active">全部</a>
+	          <a th:href="@{/borrow/myBorrow(state='1')}">最近一周</a>
+	          <a th:href="@{/borrow/myBorrow(state='2')}">最近一个月</a>
+	          <a th:href="@{/borrow/myBorrow(state='3')}">最近三个月</a>
+	      </div>
+        </div>
+        
+        <!--Project Status-->
+        <div class="mt20 clearfix">
+          <div class="tit fl">项目状态</div>
+          <div class="Options f12 fl" style="width:620px;">
+	          <a th:href="@{/borrow/myBorrow}" class="active">全部</a>
+	          <a th:href="@{/borrow/myBorrow(state='4')}">申请中项目</a>
+	          <a th:href="@{/borrow/myBorrow(state='5')}">已通过项目</a>
+	          <a th:href="@{/borrow/myBorrow(state='6')}">未通过项目</a>
+	          <a th:href="@{/borrow/myBorrow(state='7')}">已发标项目</a>
+          </div>
+        </div>
+        
+        <!--list-->
+        <table class="Record-tab mt20">
+            <tr>
+            <th width="170">项目名称</th>
+            <th width="115">项目金额</th>
+            <th width="115">月利率</th>
+            <th width="110">申请时间</th>
+            <th width="110">状态</th>
+             <th>操作</th> 
+            </tr>
+         	<tr th:each="l:${list}">
+         		<td>借款申请</td>
+         		<td th:text="${#numbers.formatDecimal(l.jemoney,0,'COMMA',2,'POINT')}"></td>
+         		<td  th:text="${l.rate}+'%'"></td>
+         		<td th:text="${#dates.format(l.sqdate,'yyyy-MM-dd HH:mm:ss')}"></td>
+         		<td th:if="${l.state==1}" th:text="申请中"></td>
+         		<td th:if="${l.state==2}" th:text="审核通过"></td>
+         		<td th:if="${l.state==3}" th:text="审核未通过"></td>
+         		<td th:if="${l.state==4}" th:text="已发标"></td>
+         		 <td class="abab">
+					<span th:if="${l.state==1}" th:text="申请中"></span>
+					<span th:if="${l.state==2}" th:text="审核通过"></span>
+					<span th:if="${l.state==3}" th:text="审核未通过"></span>
+					<span th:if="${l.state==4}" th:text="已发布标">
+						
+						
+					</span>
+				</td>
+				<input type="hidden" id="ids" th:value="${l.id}"/> 
+         	</tr>
+          </table>
+       
+        
+        
+        <!--Pagination-->
+        <div class="Pagination mt20 tr clearfix">
+			
+				<a th:if="${page.hasPreviousPage }" class="prev" th:href="@{/borrow/myBorrow(pn=${page.prePage},state=${session.state},start=${session.bstart},end=${session.bend})}"><em></em>上一页</a>
+			
+				
+					<a th:each="i:${#numbers.sequence(1,page.pages)}" th:href="@{/borrow/myBorrow(pn=${i },state=${session.state},start=${session.bstart},end=${session.bend})}" th:text="${i }"></a> 
+				
+			
+			
+				<a th:if="${page.hasNextPage }" class="next" th:href="@{/borrow/myBorrow(pn=${page.nextPage},state=${session.state},start=${session.bstart},end=${session.bend})}">下一页<em></em></a>
+			
+			
+      </div>
+        
+      </div>    
+      
+    </div>
+    
+  </div>
+  
+</div>
+<div th:replace="templates/footer :: footer"></div>
+</body>
+</html>

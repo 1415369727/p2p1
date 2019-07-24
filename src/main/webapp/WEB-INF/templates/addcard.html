@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="keywords" content="">
+<meta name="description" content="十七金融">
+<meta name="author" content="十七金融">
+<link href="../../css/css.css" rel="stylesheet">
+
+<link href="favicon.ico" rel="SHORTCUT ICON">
+<title>十七金融</title>
+</head>
+<body>
+<!--head-->
+<div class="header" th:replace="templates/header :: header"></div>
+<!--main-->
+<div class="wrap mt10 clearfix">
+  <div th:replace="templates/userleft :: userleft"></div>
+  
+  <div class="section fr">
+    <!--Withdrawals-->
+    <div class="pd20 bg-w mt10 bdr">
+      <div class="crumbs"><span>银行卡管理</span></div>
+      <div class="rechargebox">
+       <!--  <div class="Withdrawals clearfix">
+          <div class="item">
+            <div class="card-num">43674*******90097</div>
+            <div class="img"><img src="../../images/bank4.jpg"><span class="imgmid"></span></div>
+          </div>
+          <a href="#" class="add"></a>
+        </div> -->
+         <div class="safe">
+      
+      </script>
+        <table class="safe-tab">
+        <form th:action="@{/user/insertUserCard}"  method="post">
+        
+        
+          <tr>
+            <th>银行卡：</th>
+            <td>
+            	<select name="bid" id="provice"   class="input_all input_1" style="width:240px;height: 30px">
+     				<option th:each="l:${list}" th:value="${l.id}" th:text="${l.bname}"></option>
+            	</select>
+            </td>
+           <td></td>
+          </tr>
+          
+          <tr>
+            <th>银行卡号：</th>
+            <td>
+            <input type="text" name="cnumber" maxlength="18"  class="input_all input_1" style="width:227px"/><font color="red" size="5" th:text="${cardmsg}"></font></td>
+            <td></td>
+          </tr>
+            
+          <tr>
+            <th>交易密码：</th>
+            <td>
+            <input type="password" name="jypass" maxlength="6" class="input_all input_1" style="width:227px"/><font color="red" size="5" th:text="${jymsg}"></font></td>
+            <td></td>
+          </tr>
+           <tr>
+            <th></th>
+            <td><input type="submit" value="添加" class="btn btnSize_6 btn_orange"/><font color="green" size="5" th:text="${msg}"></font></td>
+            <td></td>
+          </tr>
+          </form>
+        </table>
+      </div>    
+        
+        
+        <div class="Tips mt40">
+          <div class="hd">温馨提示：</div>
+          <p>1、请确保您输入的是正确的储蓄卡账号，而非信用卡帐号。</p>
+          <p>2、为了您的资金安全，请确保提现银行账号和姓名和您进行实名验证的姓名一致。</p>
+        </div>
+        
+      </div>    
+      
+    </div>
+    
+  </div>
+  
+</div>
+
+<div th:replace="templates/footer :: footer"></div>
+</body>
+</html>

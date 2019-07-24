@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="keywords" content="">
+<meta name="description" content="十七金融">
+<meta name="author" content="十七金融">
+<link href="../../css/css.css" rel="stylesheet">
+<script src="../../js/jquery.js"></script>
+<link href="favicon.ico" rel="SHORTCUT ICON">
+<title>十七金融</title>
+</head>
+<body>
+<!--head-->
+<div class="header" th:replace="templates/header :: header"></div>
+<!--main-->
+<div class="wrap mt10 clearfix">
+    <div th:replace="templates/userleft :: userleft"></div>
+  
+  <div class="section fr">
+    <!--My investment-->
+    <div class="pd20 bg-w mt10 bdr">
+      <div class="crumbs"><span>交易记录</span></div>
+      <div class="membox">
+        <!--Transaction Date-->
+        <div class="mt20 clearfix">
+          <div class="tit fl">交易日期</div>
+          <div class="Calendar fl">
+            <input type="text" readonly th:value="${session.tstart}" id="birthday" name="birthday" class="input_all i_time input_1" style="z-index:1000;position:relative; width:95px"/> - 
+            <input type="text" readonly th:value="${session.tend}" id="birthday2" name="birthday" class="input_all i_time input_1" style="z-index:1000;position:relative; width:95px"/>
+          </div>
+          <div class="Options fl">
+	          <a th:href="@{/touzi/myJyList}" class="active">全部</a>
+	          <a th:href="@{/touzi/myJyList(state=1)}">最近一周</a>
+	          <a th:href="@{/touzi/myJyList(state=2)}">最近一个月</a>
+	          <a th:href="@{/touzi/myJyList(state=3)}">最近三个月</a>
+          </div>
+        </div>
+          <script type="text/javascript">
+          $(function(){
+        	  
+          $(document).keyup(function(event){
+        	  if(event.keyCode == 13){
+        		  var start=$("#birthday").val();
+          	    var end=$("#birthday2").val();
+          	    location.href="/touzi/myJyList?start="+start+"&end="+end;
+        	
+        	  }
+        	});
+        
+          });
+          </script>
+        <!--Transaction Type-->
+        <div class="mt20 clearfix">
+          <div class="tit fl">交易类型</div>
+          <div class="Options f12 fl" style="width:620px;">
+	          <a th:href="@{/touzi/myJyList}" class="active">全部</a>
+	          <a th:href="@{/touzi/myJyList(state=4)}">投资</a>
+	           <a th:href="@{/touzi/myJyList(state=5)}">借款</a>
+	          <a th:href="@{/touzi/myJyList(state=6)}">充值</a>
+	          <a th:href="@{/touzi/myJyList(state=7)}">提现</a>
+	          <a th:href="@{/touzi/myJyList(state=8)}">还款</a>
+	          <a th:href="@{/touzi/myJyList(state=9)}">回款</a>
+	         
+          </div>
+        </div>
+        
+        <!--list-->
+        <table class="Record-tab mt20">
+            <tr>
+	            <th width="180">时间</th>
+	            <th width="130">交易类型</th>
+	            <th width="150">交易详情</th>
+	            <th width="140">操作金额</th>
+	            <th>账户余额</th>
+            </tr>
+            <tr th:each="l:${list}">
+            <td class="tl" th:text="${#dates.format(l.recorddate,'yyyy-MM-dd HH:mm:ss')}">2013-01-05  22:38:41</td>
+            <td>
+            	<span th:if="${l.recordtype=='1'}" th:text="投资"></span>
+            	<span th:if="${l.recordtype=='2'}" th:text="借款"></span>
+            	<span th:if="${l.recordtype=='3'}" th:text="充值"></span>
+            	<span th:if="${l.recordtype=='4'}" th:text="提现"></span>
+            	<span th:if="${l.recordtype=='5'}" th:text="还款"></span>
+            	<span th:if="${l.recordtype=='6'}" th:text="回款"></span>
+            </td>
+            <td>
+            	<span th:if="${l.recordtype=='1'}" th:text="投资成功"></span>
+            	<span th:if="${l.recordtype=='2'}" th:text="借款成功"></span>
+            	<span th:if="${l.recordtype=='3'}" th:text="充值成功"></span>
+            	<span th:if="${l.recordtype=='4'}" th:text="提现成功"></span>
+            	<span th:if="${l.recordtype=='5'}" th:text="还款成功"></span>
+            	<span th:if="${l.recordtype=='6'}" th:text="回款成功"></span>
+            </td>
+            <td class="o"  th:text="${#numbers.formatDecimal(l.recordmoney,0,2)}"></td>
+            <td th:if="${session.user.yuemoney==0}" th:text="0.00"></td>
+            <td th:if="${session.user.yuemoney!=0}" th:text="${#numbers.formatDecimal(session.user.yuemoney,0,'COMMA',2,'POINT')}"></td>
+            </tr>
+            
+          </table>
+        
+        <!--Pagination-->
+        <div class="Pagination mt20 tr clearfix">
+       		 <a th:if="${page.hasPreviousPage }" class="prev" th:href="@{/touzi/myJyList(pn=${page.prePage},state=${session.tstate},start=${session.tstart},end=${session.tend})}"><em></em>上一页</a>
+			
+				
+					<a th:each="i:${#numbers.sequence(1,page.pages)}" th:href="@{/touzi/myJyList(pn=${i },state=${session.tstate},start=${session.tstart},end=${session.tend})}" th:text="${i }"></a> 
+				
+			
+			
+				<a th:if="${page.hasNextPage }" class="next" th:href="@{/touzi/myJyList(pn=${page.nextPage},state=${session.tstate},start=${session.tstart},end=${session.tend})}">下一页<em></em></a>
+      </div>
+        
+      </div>    
+      
+    </div>
+    
+  </div>
+  
+</div>
+
+<div th:replace="templates/footer :: footer"></div>
+</body>
+</html>

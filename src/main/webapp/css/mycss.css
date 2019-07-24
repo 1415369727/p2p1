@@ -1,0 +1,377 @@
+body,div,ul,ol,dl,dt,dd,li,dl,h1,h2,h3,h4,p,th,td,form,input,select,iframe,textarea
+	{
+	margin: 0;
+	padding: 0;
+	font: 12px/1.5 tahoma, "microsoft yahei", "\5FAE\8F6F\96C5\9ED1"
+}
+
+h1,h2,h3,h4,h5,h6 {
+	font-weight: bold;
+}
+
+*:focus {
+	outline: none
+}
+
+ol,ul,li {
+	list-style: none
+}
+
+img {
+	border: 0;
+	vertical-align: middle
+}
+
+a {
+	text-decoration: none;
+	color: #333
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #DD4B39
+}
+
+body {
+	color: #333333;
+}
+
+.tops {
+	height: 30px;
+	border-bottom: 1px solid #EEEEEE;
+	background: #F5F5F5;
+	color: #333;
+}
+
+#main {
+	margin: 0 auto;
+	width: 1024px;
+}
+
+#middle {
+	width: 1024px;
+	margin: 0 auto;
+	padding: 0 0 20px 0;
+	overflow: hidden;
+}
+
+#index_left {
+	float: left;
+	width: 180px;
+}
+
+#index_left a {
+	font-size: 14px;
+	display: block;
+	height: 30px;
+	width: 150px;
+	background: url(../images/menu_bt.jpg) no-repeat;
+	line-height: 30px;
+	text-indent: 25px;
+	color: #000;
+}
+
+.user-left {
+	width: 290px;
+	float: left;
+}
+
+.user-info {
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.user-info p {
+	line-height: 25px;
+}
+
+.user-nikename {
+	font-weight: bold;
+	font-size: 16px;
+	margin: 2px 0;
+}
+
+.user-pic {
+	width: 130px;
+	height: 130px;
+	margin: 15px auto 10px;
+}
+
+.user-right {
+	float: left;
+	width: 730px;
+}
+
+.user-right table {
+	width: 100%;
+}
+
+.login {
+	width: 600px;
+	margin: 80px auto;
+}
+
+.login-form {
+	padding: 30px 50px;
+	background-color: #FFF;
+	border: 1px solid #DDD;
+}
+
+.login-up {
+	width: 100%;
+	border-bottom: 1px solid #DDD;
+	padding-bottom: 10px;
+	overflow: hidden;
+}
+
+.login-title {
+	float: left;
+	font-weight: normal;
+	font-size: 22px;
+	color: #333;
+}
+
+.login-tologin {
+	float: right;
+	margin-top: 5px;
+	font-size: 14px;
+}
+
+.login-item {
+	margin-top: 28px;
+	text-align: center;
+}
+
+.login-label {
+	display: block;
+	float: left;
+	width: 130px;
+	line-height: 40px;
+	font-size: 15px;
+	color: #666;
+	text-align: right;
+}
+
+.login-form .required {
+	padding: 0px 5px;
+	font-size: 18px;
+	color: #900b09;
+}
+
+.login-con {
+	display: inline-block;
+	width: 230px;
+	line-height: 18px;
+	border: 1px solid #CCC;
+	padding: 10px 8px;
+	font-size: 15px;
+	color: #666;
+	vertical-align: middle;
+}
+
+.login-code {
+	width: 120px;
+}
+
+.login-btn {
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	background: #2EA7E0;
+	border: 1px solid #8FC320;
+	color: #FFF;
+	padding: 4px 12px;
+	border-radius: 4px;
+	cursor: pointer;
+	padding: 10px 20px;
+	width: 310px;
+	font-size: 16px;
+}
+
+#index_center {
+	float: left;
+	width: 844px;
+}
+
+#logout_middle {
+	float: right;
+	margin-top: 100px;
+	margin-right: 220px;
+	width: 500px;
+	height: 300px;
+	border-style: double;
+}
+
+.text_list th {
+	height: 30px;
+	line-height: 30px;
+	text-align: left;
+	background: #eaeef0;
+	padding: 0 10px;
+}
+
+.text_list td {
+	border-bottom: 1px dotted #e4e6eb;
+	height: 30px;
+	line-height: 30px;
+	padding: 0 10px;
+}
+
+.text_list .text_title a {
+	width: 520px; /*必须设置宽度*/
+	overflow: hidden; /*溢出隐藏*/
+	text-overflow: ellipsis; /*以省略号...显示*/
+	white-space: nowrap; /*强制不换行*/
+	display: block; 
+}
+
+#footer {
+	text-align: center;
+	float: left;
+	padding: 10px 0 0 0;
+	width: 100%;
+	height: 60px;
+	margin: 0 auto;
+	float: left;
+}
+
+#footer a:hover {
+	color: #FFF;
+}
+
+.page {
+	padding-top: 20px;
+	padding-right: 20px;
+	float: right;
+}
+
+#pagination-flickr li {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	font-size: 11px;
+	list-style: none; /* savers */
+	float: left;
+}
+
+#pagination-flickr a {
+	border: solid 1px #DDDDDD;
+	margin-right: 2px;
+}
+
+#pagination-flickr .previous-off,#pagination-flickr .next-off {
+	color: #666666;
+	display: block;
+	float: left;
+	font-weight: bold;
+	padding: 3px 4px;
+}
+
+#pagination-flickr .next a,#pagination-flickr .previous a {
+	font-weight: bold;
+	border: solid 1px #FFFFFF;
+}
+
+#pagination-flickr .active {
+	color: #ff0084;
+	font-weight: bold;
+	display: block;
+	float: left;
+	padding: 4px 6px;
+}
+
+#pagination-flickr a:link,#pagination-flickr a:visited {
+	color: #0063e3;
+	display: block;
+	float: left;
+	padding: 3px 6px;
+	text-decoration: none;
+}
+
+#pagination-flickr a:hover {
+	border: solid 1px #000;
+	background: #0063DC;
+	color: #FFF;
+}
+
+.d1 form {
+	position: relative;
+	width: 300px;
+	margin: 0 auto;
+}
+
+.d1 input {
+	width: 100%;
+	height: 42px;
+	padding-left: 10px;
+	border: 2px solid #7BA7AB;
+	border-radius: 5px;
+	outline: none;
+	color: #9E9C9C;
+}
+
+.d1 button {
+	position: absolute;
+	top: 0;
+	right: -14px;
+	width: 42px;
+	height: 46px;
+	border: none;
+	background: #2EA7E0;
+	border-radius: 0 5px 5px 0;
+	cursor: pointer;
+}
+
+.d1 button:before {
+	content: ">";
+	font-weight: bold;
+	font-family: FontAwesome;
+	font-size: 16px;
+	color: #F9F0DA;
+}
+
+.user-edit {
+	margin: 0 auto;
+}
+
+.user-edit h5 {
+	font-size: 16px;
+}
+
+.user-edit table {
+	width: 100%;
+}
+
+.user-edit  tr {
+	height: 40px;
+}
+
+.user-edit  td {
+	padding: 5px 10px;
+	border-bottom: 1px dotted #e4e6eb;
+}
+
+.user-edit .title {
+	width: 50%;
+}
+
+.user-edit .label {
+	text-align: center;
+}
+
+.user-edit .user-txt {
+	display: inline-block;
+	width: 230px;
+	line-height: 18px;
+	border: 1px solid #CCC;
+	padding: 10px 8px;
+	font-size: 15px;
+	color: #666;
+	vertical-align: middle;
+}
+
+.user-edit .button {
+	text-align: center;
+	height: 60px;
+	vertical-align: middle;
+}

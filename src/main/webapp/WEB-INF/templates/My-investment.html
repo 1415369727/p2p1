@@ -1,0 +1,225 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="keywords" content="">
+<meta name="description" content="十七金融">
+<meta name="author" content="十七金融">
+<link href="../../css/css.css" rel="stylesheet">
+<script src="../../js/jquery.js"></script>
+<link href="favicon.ico" rel="SHORTCUT ICON">
+<title>十七金融</title>
+<style>
+        /*背景层*/
+        #popLayer {
+            display: none;
+            background-color: #B3B3B3;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 10;
+            -moz-opacity: 0.8;
+            opacity:.80;
+            filter: alpha(opacity=80);/* 只支持IE6、7、8、9 */
+        }
+ 
+        /*弹出层*/
+        #popBox {
+            display: none;
+            background-color: #FFFFFF;
+            z-index: 11;
+            width: 1000px;
+            height: 600px;
+            position:fixed;
+            top:0;
+            right:0;
+            left:0;
+            bottom:0;
+            margin:auto;
+            overflow:scroll;
+        }
+ 
+        #popBox .close{
+            text-align: right;
+            margin-right: 5px;
+            background-color: #F8F8F8;
+        }
+ 
+        /*关闭按钮*/
+        #popBox .close a {
+            text-decoration: none;
+            color: #2D2C3B;
+        }
+ .hetongT{
+ 	border:1px solid black;
+ 	width: 800px;
+ 	height: 700px;
+ 	margin: auto;
+ 	
+ }
+ .dayin{
+ 	margin-right: 220px;
+ }
+    </style>
+</head>
+<body>
+<!--head-->
+<div class="header" th:replace="templates/header :: header"></div>
+<!--main-->
+<div class="wrap mt10 clearfix">
+     <div th:replace="templates/userleft :: userleft"></div>
+  
+  <div class="section fr">
+    <!--My investment-->
+    <div class="pd20 bg-w mt10 bdr">
+      <div class="crumbs"><span>我的投资</span></div>
+      <div class="membox">
+        <p class="f16 c333">
+        	投资项目：<span class="o" th:text="${myTouziCount}">5</span>个，&nbsp;&nbsp;
+        	总投金额：<span class="o" th:text="${#numbers.formatDecimal(myTouZiMoney,0,'COMMA',2,'POINT')}">500.00</span>元，&nbsp;&nbsp;
+        	累计收益：<span class="o" th:text="${#numbers.formatDecimal(session.user.shouyimoney,0,'COMMA',2,'POINT')}">29.47</span>元</p>
+        
+       <!--  <div class="My-investment mt20 clearfix">
+           <div class="item"><div class="box clearfix"><span class="count">0个</span><em class="invest ico1"></em>未还款项目</div></div>
+           <div class="item"><div class="box clearfix"><span class="count">4个</span><em class="invest ico2"></em>还款中项目</div></div>
+           <div class="item"><div class="box clearfix"><span class="count ico3">1个</span><em class="invest ico3"></em>已还款项目</div></div>
+         </div> -->
+         
+        <!--Transaction Date-->
+        <div class="mt20 clearfix">
+          <div class="tit fl">交易日期</div>
+          <div class="Calendar fl">
+          <input type="text" readonly th:value="${session.tstart}" id="birthday" name="birthday" class="input_all i_time input_1" style="z-index:1000;position:relative; width:95px"/> - 
+          <input type="text" readonly th:value="${session.tend}" id="birthday2" name="birthday" class="input_all i_time input_1" style="z-index:1000;position:relative; width:95px"/></div>
+          <div class="Options fl">
+	          <a th:href="@{/touzi/myTouZiList}" class="active">全部</a>
+	          <a th:href="@{/touzi/myTouZiList(state=1)}">最近一周</a>
+	          <a th:href="@{/touzi/myTouZiList(state=2)}">最近一个月</a>
+	          <a th:href="@{/touzi/myTouZiList(state=3)}">最近三个月</a>
+          </div>
+        </div>
+             <script type="text/javascript">
+          $(function(){
+          $(document).keyup(function(event){
+        	  if(event.keyCode == 13){
+        		var start=$("#birthday").val();
+          	    var end=$("#birthday2").val();
+          	    location.href="/touzi/myTouZiList?start="+start+"&end="+end;
+        	  }
+        	});
+          });
+          </script>
+        <!--Project Status-->
+        <div class="mt20 clearfix">
+          <div class="tit fl">项目状态</div>
+          <div class="Options f12 fl" style="width:620px;">
+	          <a th:href="@{/touzi/myTouZiList}" class="active">全部</a>
+	          <!-- <a th:href="@{/touzi/myTouZiList(state=1)}">未还款项目</a>
+	          <a th:href="@{/touzi/myTouZiList(state=1)}">还款中项目</a>
+	          <a th:href="@{/touzi/myTouZiList(state=1)}">已还款项目</a> -->
+          </div>
+        </div>
+        
+        <!--list-->
+        <table class="Record-tab mt20">
+            <tr>
+            <th width="135">订单号</th>
+            <th width="135">项目名称</th>
+            <th width="105">投资金额</th>
+            <th width="100">年利率</th>
+            <th width="145">投资时间</th>
+            <th width="80">待还利息</th>
+            <th>查看合同</th></tr>
+            <tr th:each="l:${list}">
+            <td class="tl" th:text="${l.orderid}">201410282710792166</td>
+            <td th:text="${l.invest.proname}">安捷宝（第一期）002</td>
+            <td class="o" th:text="${l.touzimoney}">100.00元</td>
+            <td th:text="${#numbers.formatDecimal(l.invest.borrow.rate*12,0,0)}+'%'">13.80%+2.20%</td>
+            <td th:text="${#dates.format(l.touzidate,'yyyy-MM-dd HH:mm:ss')}">2013-01-5 22:24:55</td>
+            <td><span class="o" th:text="${#numbers.formatDecimal(l.invest.borrow.rate/100*l.touzimoney,0,2)}">5.34</span>元</td>
+            <td class="touzihetong">
+            <a >查看合同</a>
+            </td>
+             <input type="hidden" id="ids" th:value="${l.id}"/> 
+            </tr>
+          
+          </table>
+        
+          <!-- 隐藏div -->
+		<div id="popLayer"></div>
+		<div id="popBox">
+		    <div class="close">
+		        <a href="javascript:void(0)" id="guanbi" onclick="closeBox()">关闭</a>
+		    </div>
+		    <div class="content">
+		    <input id="dayin" type="button" class="dayin" th:value="打印本合同"/>
+		    <!--startprint-->
+				<div id="toulist" class="hetongT">
+					
+					
+					
+				</div>
+			<!--endprint-->
+			</div>
+		</div>
+       <script type="text/javascript">
+       $(function(){
+    	   $("#dayin").click(function(){
+    		   bdhtml=window.document.body.innerHTML; 
+    		   sprnstr="<!--startprint-->"; 
+    		   eprnstr="<!--endprint-->"; 
+    		   prnhtml=bdhtml.substr(bdhtml.indexOf(sprnstr)+17); 
+    		   prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr)); 
+    		   window.document.body.innerHTML=prnhtml; 
+    		   window.print(); 
+    		   window.document.body.innerHTML=bdhtml;
+    	   });
+    	   
+    	   
+    	$(".touzihetong").each(function(){
+    	  
+       	$(this).click(function(){
+       	 var id=$(this).siblings("#ids").val();
+       		
+       		var popBox = document.getElementById("popBox");
+            var popLayer = document.getElementById("popLayer");
+            popBox.style.display = "block";
+            popLayer.style.display = "block";
+
+       	});
+    	   });
+       	$("#guanbi").click(function(){
+       		var popBox = document.getElementById("popBox");
+            var popLayer = document.getElementById("popLayer");
+            popBox.style.display = "none";
+            popLayer.style.display = "none";
+			//location.href="/invest/myInvest";
+       	});
+       }); 
+       </script>
+        
+        
+        <!--Pagination-->
+        <div class="Pagination mt20 tr clearfix">
+        	<a th:if="${page.hasPreviousPage }" class="prev" th:href="@{/touzi/myTouZiList(pn=${page.prePage},state=${session.tstate},start=${session.tstart},end=${session.tend})}"><em></em>上一页</a>
+			
+				
+					<a th:each="i:${#numbers.sequence(1,page.pages)}" th:href="@{/touzi/myTouZiList(pn=${i },state=${session.tstate},start=${session.tstart},end=${session.tend})}" th:text="${i }"></a> 
+				
+			
+			
+				<a th:if="${page.hasNextPage }" class="next" th:href="@{/touzi/myTouZiList(pn=${page.nextPage},state=${session.tstate},start=${session.tstart},end=${session.tend})}">下一页<em></em></a>
+      </div>
+        
+      </div>    
+      
+    </div>
+    
+  </div>
+  
+</div>
+
+<div th:replace="templates/footer :: footer"></div>
+</body>
+</html>

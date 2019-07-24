@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="keywords" content="">
+<meta name="description" content="十七金融">
+<meta name="author" content="十七金融">
+<link href="../../css/css.css" rel="stylesheet">
+<script src="../../js/jquery.tabso_yeso.js"></script>
+<script src="../../js/jquery.js"></script>
+<link href="favicon.ico" rel="SHORTCUT ICON">
+<title>十七金融</title>
+</head>
+<body>
+<!--head-->
+<div class="header" th:replace="templates/header :: header"></div>
+<!--main-->
+<div class="wrap mt10 clearfix">
+   <div th:replace="templates/userleft :: userleft"></div>
+  
+  <div class="section fr">
+    <!--My loan-->
+    <div class="pd20 bg-w mt10 bdr">
+      <div class="crumbs"><span>站内消息 |<a id="updatestate">全部已读</a></span></div>
+    
+   <script type="text/javascript">
+    /* 
+		$(document).ready(function($){
+			
+			$("#normaltab").tabso({
+				cntSelect:"#normalcon",
+				tabEvent:"click",
+				tabStyle:"normal"
+			});
+		});  */
+		 $(function(){
+			 var pagepn=$("#pagepn").val();	
+				$(".zhankai").each(function(){
+					$(this).click(function(){
+					
+						var id=$(this).siblings("#yinid").val();
+						
+						/* if($("#normalcon").is(':hidden')){
+							$(this).siblings("#normalcon").show();
+						}else{
+							$(this).siblings("#normalcon").hide();
+							//alert(pagepn);
+						} */
+						$(this).next(".normalcon").toggle();
+							$.ajax({
+								url:"/user/updateMsgStateByOne?id="+id,
+								type:"get",
+								success:function(obj){
+									/* if(obj){
+										location.href="/user/showMassage?pn="+pagepn;
+										
+									} */
+								}
+							});
+						
+				});
+					
+				
+			});
+				//标记全部已读
+				$("#updatestate").click(function(){
+					$.ajax({
+						url:"/user/updateMassageState",
+						type:"get",
+						success:function(data){
+							 if(data==1){
+								location.href="/user/showMassage";
+							} 
+						}
+					});
+				});
+		}); 
+	</script>
+      <!--Station news-->
+      <div class="Station-news">
+        <dl th:each="l:${mslist}" class="daceshi" id="daceshi" th:if="${l.state==1}">
+       <span class="zhankai">
+          <dt class="un clearfix" id="dtdt" ><span class="btn"><span class="text" id="normaltab">展开</span><em class="myfont">&#xe609;</em></span>
+				<span th:text="${l.des}"></span>
+			<span class="time"><span th:text="${#dates.format(l.msgdate,'yyyy-MM-dd HH:mm:ss')}"></span></span><span class="ico Unread">未读</span>
+			</dt>
+		</span>	
+		
+          <dd id="normalcon" class="normalcon csaaa"><p>亲爱的<span th:text="${session.user.name}"></span>,<span th:text="${l.des}"></span>。您可在[通知设置]选择希望收到的提醒。</p><p>感谢您对十七金融一如既往的支持，希望我们的服务能够带来您财富的增长。</p></dd>
+       <input type="hidden" id="yinid" th:value="${l.id}"/>
+        </dl>
+        <dl th:each="l:${mslist}" class="daceshi" id="daceshi" th:if="${l.state==2}">
+        <span class="zhankai">
+          <dt class="clearfix"><span class="btn"><span class="text" id="normaltab">展开</span><em class="myfont">&#xe609;</em></span>
+				<span th:text="${l.des}"></span>
+			<span class="time"><span th:text="${#dates.format(l.msgdate,'yyyy-MM-dd HH:mm:ss')}"></span></span>
+			</dt>
+		</span>
+		<input type="hidden" id="yinid" th:value="${l.id}"/>
+          <dd id="normalcon"><p>亲爱的<span th:text="${session.user.name}"></span>,<span th:text="${l.des}"></span>。您可在[通知设置]选择希望收到的提醒。</p><p>感谢您对十七金融一如既往的支持，希望我们的服务能够带来您财富的增长。</p></dd>
+        </dl>
+       
+      </div>
+      <input type="hidden" th:value="${session.pn}" id="pagepn"/>
+      <!--Pagination-->
+      <div class="Pagination mt20 tr clearfix">
+       <a th:if="${page.hasPreviousPage }" class="prev" th:href="@{/user/showMassage(pn=${page.prePage})}"><em></em>上一页</a>
+			
+				
+					<a th:each="i:${#numbers.sequence(1,page.pages)}" th:href="@{/user/showMassage(pn=${i })}" th:text="${i }"></a> 
+				
+			
+			
+				<a th:if="${page.hasNextPage }" class="next" th:href="@{/user/showMassage(pn=${page.nextPage})}">下一页<em></em></a>
+
+      </div>      
+    </div>
+    
+  </div>
+  
+</div>
+
+<div th:replace="templates/footer :: footer"></div>
+</body>
+</html>

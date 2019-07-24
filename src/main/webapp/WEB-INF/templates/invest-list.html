@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="keywords" content="">
+<meta name="description" content="十七金融">
+<meta name="author" content="十七金融">
+<link href="../../css/css.css" rel="stylesheet">
+
+<link href="favicon.ico" rel="SHORTCUT ICON">
+<title>十七金融</title>
+</head>
+
+<body>
+<!--head-->
+<div class="header" th:replace="templates/header :: header"></div>
+
+<!--main-->
+<div class="wrap mt10">
+  <div class="bg-w bdr">
+    <div class="pd20">
+      <!--invest-->
+      <div class="crumbs clearfix" style="margin-bottom:20px;"><a th:href="@{/invest/showInvest}" class="ico back">返回</a><span>我要投资</span>
+       <a th:if="${session.user==null}" href="#" class="ico Prompt indent loginbtn">您尚未登录</a>
+       
+    	<span th:if="${session.user!=null}"   style="font-size: 16px;background-position:-150px -293px; position:absolute; right:20px; bottom:-5px;" th:text="欢迎：+${session.user.name}"></span>
+      
+      <span class="Yesterday-turnover">昨日成交金额：<b class="o" th:text="${#numbers.formatDecimal(ztMoney,0,'COMMA',2,'POINT')}"> </b>元</span></div>
+    </div>
+    <table class="invest-list-tab">
+      <tr>
+        <th width="120">信用等级</th>
+        <th width="280">项目名称</th>
+        <th width="135">借款年利率</th>
+        <th width="100">期限</th>
+        <th width="130">投资金额</th>
+        <th width="195">进度</th>
+        <th class="Statistics">共<span class="o" th:text="${biaosl}"></span>个标</th>
+      </tr>
+      <tr th:each="l,star:${list}">
+        <td>
+        <span th:if="${l.xydj=='B'}" class="ico lebel_B indent" >B</span>
+        <span th:if="${l.xydj=='A'}" class="ico lebel_A indent" >A</span>
+        </td>
+        <td  th:text="${l.proname}"></td>
+        <td class="o" th:text="${#numbers.formatDecimal(l.borrow.rate*12,0,0)}+'%'"> </td>
+        <td th:text="${l.borrow.tlimit}+'个月'"></td>
+         <span th:if="${l.touziMoney!=0}">
+          <td th:text="${#numbers.formatDecimal(l.touziMoney,0,'COMMA',2,'POINT')}+'元'"></td>
+         </span>
+         <span th:if="${l.touziMoney==0}">
+          <td ><span th:text="0.00">0.00</span></td>
+         </span>
+         <span  th:if="${l.touziMoney!=0}">
+         <td class="tl" ><span class="process" ><span class="process-bar"  th:style="'width:'+*{#numbers.formatDecimal((l.touziMoney/l.jemoney)*100,0,0)}+'%'"></span></span><span  th:text="${#numbers.formatDecimal((l.touziMoney/l.jemoney)*100,0,0)}+'%'"></span></td> 
+        </span>
+         <span  th:if="${l.touziMoney==0}">
+         <td class="tl" ><span class="process" ><span class="process-bar" style="width:0px"></span></span><span>0%</span></td> 
+         </span>
+        <td th:width="30px">
+        <dt class="clearfix">
+        
+         <a th:if="${session.user!=null and session.user.id != l.uid}" th:href="@{/invest/showinvest(id=${l.id})}" class="button ico Bid">投标</a>
+         <a th:if="${session.user==null}" th:href="@{/invest/showinvest(id=${l.id})}" class="button ico Bid">投标</a>
+        <a th:if="${session.user!=null and session.user.id ==l.uid}" class="button ico Repayment" >我的标</a>
+        </dt>
+        </td>
+      </tr>
+    </table>
+    <!--Pagination-->
+    <div class="Pagination pd20 tr clearfix">
+	    <a th:if="${page.hasPreviousPage }" class="prev" th:href="@{/invest/showInvestList(pn=${page.prePage})}"><em></em>上一页</a>
+			<a th:each="i:${#numbers.sequence(1,page.pages)}" th:href="@{/invest/showInvestList(pn=${i })}" th:text="${i }"></a> 
+		<a th:if="${page.hasNextPage }" class="next" th:href="@{/invest/showInvestList(pn=${page.nextPage})}">下一页<em></em></a>
+  </div>
+  <div class="ad img mt20"><img src="../../images/ad.jpg"></div>
+</div>
+<div th:replace="templates/footer :: footer"></div>
+</body>
+</html>

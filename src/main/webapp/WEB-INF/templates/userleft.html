@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<div th:fragment="userleft">
+	<div class="aside fl">
+    <!--side-nav-->
+    <a th:href="@{/user/showmember}" class="member-aside-title"><em class="myfont">&#xe627;</em>帐户中心</a>
+    <ul class="side-nav f14 bdr">
+    <li><a th:href="@{/user/showUserInfo}">完善资料</a></li>
+      <li><a th:href="@{/user/myzjMoney}">资产统计</a></li>
+      <li><a th:href="@{/user/showRecharge}">我要充值</a></li>
+      <li><a th:href="@{/user/shoWdrawals}">我要提现</a></li>
+      <li><a th:href="@{/user/showMyBank}">银行卡管理</a></li>
+      <li><a th:href="@{/touzi/myJyList}">交易记录</a></li>
+      <li><a th:href="@{/touzi/myTouZiList}">我的投资</a></li>
+      <li><a th:href="@{/borrow/myBorrow}">我的申请</a></li>
+      <li><a th:href="@{/invest/myInvest}">我的借款</a></li>
+      <li><a th:href="@{/user/showMassage}">站内信息</a></li>
+     <!--   <li><a href="safe.html">安全设置</a></li>
+      <li><a href="Recommend.html">推荐好友</a></li> -->
+    </ul>
+      
+        
+  </div>
+</div>
+</body>
+</html>

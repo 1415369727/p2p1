@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lishan.p2p.mapper.UserMapper" >
+	
+	<resultMap type="com.lishan.p2p.pojo.Touzi" id="touzitMaps">
+		<id column="id" property="id"></id>
+		<result column="orderid" property="orderid"/>
+		<result column="uid" property="uid"/>
+		<result column="inid" property="inid"/>
+		<result column="state" property="state"/>
+		<result column="touzidate" property="touzidate"/>
+		<result column="touzimoney" property="touzimoney"/>
+		<result column="biaoMoney" property="biaoMoney"/>
+		<association property="invest" javaType="com.lishan.p2p.pojo.Invest">
+				<id column="iid" property="id"></id>
+				<result column="proname" property="proname"/>
+				<result column="starttime" property="starttime"/>
+				<result column="endtime" property="endtime"/>
+				<result column="biaolimit" property="biaolimit"/>
+				<result column="istate" property="state"/>
+				<result column="biaodate" property="biaodate"/>
+				<result column="jemoney" property="jemoney"/>
+				<result column="bid" property="bid"/>
+				<result column="des" property="des"/>
+				<result column="xydj" property="xydj"/>
+				<result column="uid" property="uid"/>
+				<result column="touziMoney" property="touziMoney"/>
+				
+				<result column="backMoney" property="backMoney"/>
+				<association property="borrow" javaType="com.lishan.p2p.pojo.Borrow">
+						<id column="borid" property="id"></id>
+					    <result column="jemoney" property="jemoney"/>
+					    <result column="sqdate" property="sqdate"  />
+					    <result column="rate" property="rate"/>
+					    <result column="tlimit" property="tlimit"  />
+					    <result column="brostate" property="state" />
+					    <result column="tel" property="tel" />
+					    <result column="yuecom" property="yuecom" />
+					    <result column="uid" property="uid" />
+					</association>
+			</association>
+	</resultMap>
+	<resultMap type="com.lishan.p2p.pojo.Invest" id="invMaps">
+	<id column="iid" property="id"></id>
+				<result column="proname" property="proname"/>
+				<result column="starttime" property="starttime"/>
+				<result column="endtime" property="endtime"/>
+				<result column="biaolimit" property="biaolimit"/>
+				<result column="istate" property="state"/>
+				<result column="biaodate" property="biaodate"/>
+				<result column="jemoney" property="jemoney"/>
+				<result column="bid" property="bid"/>
+				<result column="des" property="des"/>
+				<result column="xydj" property="xydj"/>
+				<result column="uid" property="uid"/>
+				<result column="touziMoney" property="touziMoney"/>
+				
+				<result column="backMoney" property="backMoney"/>
+	<association property="borrow" javaType="com.lishan.p2p.pojo.Borrow">
+						<id column="borid" property="id"></id>
+					    <result column="jemoney" property="jemoney"/>
+					    <result column="sqdate" property="sqdate"  />
+					    <result column="rate" property="rate"/>
+					    <result column="tlimit" property="tlimit"  />
+					    <result column="brostate" property="state" />
+					    <result column="tel" property="tel" />
+					    <result column="yuecom" property="yuecom" />
+					    <result column="uid" property="uid" />
+					</association>
+	</resultMap>
+	<resultMap type="com.lishan.p2p.pojo.UserCard" id="userCardMap">
+		<result column="bid" property="bid"/>
+		<result column="uid" property="uid"/>
+		<result column="cnumber" property="cnumber"/>
+		<result column="money" property="money"/>
+		<result column="jypass" property="jypass"/>
+		<association property="bank" javaType="com.lishan.p2p.pojo.Bank">
+			<id column="id" property="id"></id>
+			<result column="bname" property="bname"/>
+			<result column="image" property="image"/>
+		</association>
+	</resultMap>
+	
+	
+	<!-- 修改消息状态 -->
+	<update id="updateMsgStateByOne">
+		update massage set state=2 where id=#{id} and state=1
+	</update>
+	<!-- 提现插入消息提醒 -->
+	<insert id="insertMassageByTiXian" parameterType="com.lishan.p2p.pojo.Massage">
+		insert into massage(uid,des,msgdate,state) 
+		values(#{uid},#{des},#{msgdate},1)
+	</insert>
+	<!-- 充值插入消息提醒 -->
+	<insert id="insertMassageByCongZhi" parameterType="com.lishan.p2p.pojo.Massage">
+		insert into massage(uid,des,msgdate,state) 
+		values(#{uid},#{des},#{msgdate},1)
+	</insert>
+	<!-- 充值插入交易记录 -->
+	<insert id="insertRecordByCongZhi" parameterType="com.lishan.p2p.pojo.Record">
+		insert into record(recorddate,recordtype,uid,recordmoney,jyuid) values
+		(#{recorddate},3,#{uid},#{recordmoney},#{jyuid})
+	</insert>
+	<!-- 充值银行卡余额减少 -->
+	<update id="updateCongZhiCard">
+	update usercard set money=money-#{czmoney} where uid=#{id} and bid=#{bid}
+	</update>
+	<!-- 充值用户余额增加 -->
+	<update id="updateCongZhiUser">
+		update user set yuemoney=yuemoney+#{czmoney} where id=#{id}
+	</update>
+	<!-- 查询用户余额 -->
+	<select id="getUserMoney" resultType="double">
+		select yuemoney from user where id=#{id}
+	</select>
+	<!-- 提现插入交易记录 -->
+	<insert id="insertRecord" parameterType="com.lishan.p2p.pojo.Record">
+		insert into record(recorddate,recordtype,uid,recordmoney,jyuid) values
+		(#{recorddate},4,#{uid},#{recordmoney},#{jyuid})
+	</insert>
+	<!-- 提现银行卡余额增加 -->
+	<update id="updateTiXianCardYue">
+		update usercard set money=money+#{tixmoney} where uid=#{uid} and bid=#{bid}
+	</update>
+	<!-- 提现用户余额减少 -->
+	<update id="updateTiXianYue">
+		update user set yuemoney=yuemoney-#{tixmoney} where id=#{uid}
+	</update>
+	<!-- 查询银行卡信息 -->
+	<select id="getUserCardByJypass" resultMap="userCardMap">
+		select * from usercard where uid=#{uid} and bid=#{bid} and jypass=#{jypass}
+	</select>
+	<!-- 查询我的银行卡列表 -->
+	<select id="getMyBankCard" resultMap="userCardMap">
+		select uc.*,b.* from usercard uc left join bank b on uc.bid=b.id where uc.uid=#{id}
+	</select>
+	<!-- 添加银行卡信息 -->
+	<insert id="insertUserCard" parameterType="com.lishan.p2p.pojo.UserCard">
+	insert into usercard(bid,uid,cnumber,jypass) 
+	values(#{bid},#{uid},#{cnumber},#{jypass})
+	</insert>
+	<!-- 最近应还款 -->
+	<select id="getMyZuiJinMoney" resultMap="invMaps">
+	select i.*,b.rate from  invest i  left join borrow b on i.bid=b.id where i.uid=#{id} and i.state=2
+	</select>
+	<!-- 查询借款列表 -->
+	<select id="getTInvestList" resultMap="invMaps">
+		select i.*,b.rate from  invest i  left join borrow b on i.bid=b.id where i.uid=#{id} and i.state=2 or i.state=4
+	</select>
+	<!-- 获取还款金额 -->
+	<select id="getHuanMoney" resultType="double">
+		select sum(huankmoney) from back where uid=#{id}
+	</select>
+	<!-- 获取还款次数 -->
+	<select id="getHuanNum" resultType="int">
+		select count(*) from back where uid=#{id} and invid=#{invid}
+	</select>
+	<!-- 查询我的投资 -->
+	<select id="getTouziList" resultMap="touzitMaps">
+	select t.*,i.*,b.* from touzi t left join invest i on t.inid=i.id left join borrow b on i.bid=b.id
+	 where t.uid=#{id} and t.state=1
+	</select>
+	<!-- 修改消息状态为已读 -->
+	<update id="updateMassageState">
+		update massage set state=2 where uid=#{id} and state=1
+	</update>
+	<!-- 查询消息列表 -->
+	<select id="showMassage" resultType="com.lishan.p2p.pojo.Massage">
+		select * from massage where uid=#{id} order by msgdate desc
+	</select>
+	<!-- 查询未读消息数量 -->
+	<select id="getMsgNumber" resultType="int">
+		select count(*) from massage where uid=#{id} and state=1
+	</select>
+	<!-- 查询我的已还款总额 -->
+	<select id="getMyYhk" resultType="double">
+		select sum(huankmoney) from back where uid=#{id}
+	</select>
+	<!-- 查询我的总借入金额 -->
+	<select id="getMyZjje" resultType="double">
+		select sum(jemoney) from invest where state=2 and uid=#{id}
+	</select>
+	<!-- 查询银行卡列表 -->
+	<select id="getBankList" resultType="com.lishan.p2p.pojo.Bank">
+		select * from bank
+	</select>
+	<!-- 查询我的投资总额 -->
+	<select id="getMyZtje" resultType="double">
+		select sum(touzimoney) from touzi where uid=#{id}
+	</select>
+	
+	<!-- 查询我的交易列表 -->
+	<select id="getRecordList" resultType="com.lishan.p2p.pojo.Record">
+		select * from record where uid=#{id}
+		<if test="state!=null and ''!=state and state==1">
+		and recordtype=1
+		</if>
+		<if test="state!=null and ''!=state and state==2">
+		and recordtype=2
+		</if>
+		<if test="state!=null and ''!=state and state==3">
+		and recordtype=3
+		</if>
+		<if test="state!=null and ''!=state and state==4">
+		and recordtype=4
+		</if>
+		<if test="state!=null and ''!=state and state==5">
+		and recordtype=5
+		</if>
+		<if test="state!=null and ''!=state and state==6">
+		and recordtype=6
+		</if>
+		order by recorddate desc 
+	</select>
+	<!-- 用户登录 -->
+	<select id="login" resultType="com.lishan.p2p.pojo.User">
+		select * from user where username=#{username} and password=#{password}
+	</select>
+	<!-- 用户注册 -->
+	<insert id="regist" parameterType="com.lishan.p2p.pojo.User">
+		insert into user (username,password,phone) values(#{username},#{password},#{phone})
+	</insert>
+	<!-- 用户个人中心 -->
+	<select id="getUserById" resultType="com.lishan.p2p.pojo.User">
+		select * from user where id=#{id}
+	</select>
+	<!-- 注册检查用户是否存在 -->
+	<select id="checkUserName" resultType="com.lishan.p2p.pojo.User">
+		select * from user where username=#{username}
+	</select>
+	<!-- 完善用户信息 -->
+	<update id="updateUserInfo" parameterType="com.lishan.p2p.pojo.User">
+		update user set name=#{name},address=#{address},sex=#{sex},birthday=#{birthday},carID=#{carID},email=#{email},state=2 where id=#{id}
+	</update>
+	
+	<!-- 获取城市 -->
+	<select id="getcity" resultType="com.lishan.p2p.pojo.Province">
+		select * from province where parentid=0
+	</select>
+</mapper>

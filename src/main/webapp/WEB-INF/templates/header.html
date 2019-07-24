@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="keywords" content="">
+<meta name="description" content="十七金融">
+<meta name="author" content="十七金融">
+<link href="../../css/css.css" rel="stylesheet">
+
+<title>十七金融</title>
+</head>
+<body>
+<!--head-->
+<div class="header" th:fragment="header">
+<script src="../../js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$.ajax({
+			url:"/user/getMassageByState",
+			type:"get",
+			success:function(data){
+				$("#msgnum").text(data+'封未读消息');
+			}
+		});
+	});
+</script>
+<div class="top">
+  <div class="wrap clearfix">
+    <em class="myfont">&#xe632;</em><span class="songti">服务热线：</span><span class="tel">400-121-8232</span>
+    <a href="#" target="_blank" class="ico weibo"></a>
+    <a href="#" target="_blank" class="ico weixin"></a>
+    <a href="#" target="_blank" class="ico qq"></a>
+    <span class="fr">
+    <span th:if="${session.user==null}">
+    <a href="javascript:;" class="loginbtn" >登录</a>
+    </span>
+    
+    
+    <span th:if="${session.user!=null}" class="loginbtn">
+    	欢迎：<span th:text="${session.user.username}"></span>
+    </span> 
+    <a href="javascript:;" class="o regbtn">免费注册</a><a th:href="@{/tz/about}">帮助中心</a>
+    
+    <a th:href="@{/user/showmember}" th:if="${session.user!=null}">账户中心</a>
+    <a th:href="@{/user/quert}" th:if="${session.user!=null}">退出</a>
+    <a th:href="@{/user/showMassage}" th:if="${session.user!=null}" id="msgnum" class="o"></a>
+    
+    </span>
+  </div>
+</div>
+<div class="head">
+  <div class="wrap pct-h clearfix">
+    <a href="index.html" class="logo indent">logo</a>
+    <div class="adtxt indent">有钱没钱，找十七金融</div>
+    <ul class="nav">
+      <li><a href="/tz/show" >首页</a></li>
+      <li><a href="/invest/showInvest">我要投资</a></li>
+      <li><a href="/borrow/showborrow">我要借款</a></li>
+      <li><a th:href="@{/tz/about}">关于我们</a></li>
+    </ul>
+  </div>
+</div>
+</div>

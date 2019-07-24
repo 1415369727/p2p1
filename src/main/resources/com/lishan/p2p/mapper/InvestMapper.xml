@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lishan.p2p.mapper.InvestMapper" >
+	<resultMap type="com.lishan.p2p.pojo.Invest" id="investMaps">
+		<id column="id" property="id"></id>
+		<result column="proname" property="proname"/>
+		<result column="starttime" property="starttime"/>
+		<result column="endtime" property="endtime"/>
+		<result column="biaolimit" property="biaolimit"/>
+		<result column="state" property="state"/>
+		<result column="biaodate" property="biaodate"/>
+		<result column="jemoney" property="jemoney"/>
+		<result column="bid" property="bid"/>
+		<result column="des" property="des"/>
+		<result column="xydj" property="xydj"/>
+		<result column="uid" property="uid"/>
+		<result column="touziMoney" property="touziMoney"/>
+		<result column="backMoney" property="backMoney"/>
+			<association property="borrow" javaType="com.lishan.p2p.pojo.Borrow">
+				<id column="borid" property="id"></id>
+			    <result column="jemoney" property="jemoney"/>
+			    <result column="sqdate" property="sqdate"  />
+			    <result column="rate" property="rate"/>
+			    <result column="tlimit" property="tlimit"  />
+			    <result column="brostate" property="state" />
+			    <result column="tel" property="tel" />
+			    <result column="yuecom" property="yuecom" />
+			    <result column="uid" property="uid" />
+			    
+			</association>
+			<collection property="touzi" ofType="com.lishan.p2p.pojo.Touzi">
+				<id column="tid" property="id"></id>
+				<result column="orderid" property="orderid"/>
+				<result column="uid" property="uid"/>
+				<result column="inid" property="inid"/>
+				<result column="tstate" property="state"/>
+				<result column="touzidate" property="touzidate"/>
+				<result column="touzimoney" property="touzimoney"/>
+			</collection>
+	</resultMap>
+		<resultMap type="com.lishan.p2p.pojo.Touzi" id="touzitMaps">
+		<id column="id" property="id"></id>
+		<result column="orderid" property="orderid"/>
+		<result column="uid" property="uid"/>
+		<result column="inid" property="inid"/>
+		<result column="state" property="state"/>
+		<result column="touzidate" property="touzidate"/>
+		<result column="touzimoney" property="touzimoney"/>
+		<result column="biaoMoney" property="biaoMoney"/>
+			<association property="invest" javaType="com.lishan.p2p.pojo.Invest">
+				<id column="iid" property="id"></id>
+				<result column="proname" property="proname"/>
+				<result column="starttime" property="starttime"/>
+				<result column="endtime" property="endtime"/>
+				<result column="biaolimit" property="biaolimit"/>
+				<result column="istate" property="state"/>
+				<result column="biaodate" property="biaodate"/>
+				<result column="jemoney" property="jemoney"/>
+				<result column="bid" property="bid"/>
+				<result column="des" property="des"/>
+				<result column="xydj" property="xydj"/>
+				<result column="iuid" property="uid"/>
+				<result column="touziMoney" property="touziMoney"/>
+					<association property="borrow" javaType="com.lishan.p2p.pojo.Borrow">
+						<id column="borid" property="id"></id>
+					    <result column="jemoney" property="jemoney"/>
+					    <result column="sqdate" property="sqdate"  />
+					    <result column="rate" property="rate"/>
+					    <result column="tlimit" property="tlimit"  />
+					    <result column="brostate" property="state" />
+					    <result column="tel" property="tel" />
+					    <result column="yuecom" property="yuecom" />
+					    <result column="uid" property="uid" />
+					</association>
+			</association>
+	</resultMap>
+	
+	<!-- 标过期 修改借款人的冻结资金  减去总投资的 -->
+	<update id="updateInvestUserDjMoney">
+	update user set djmoney=djmoney-#{tzmoney} where id=#{buid}
+	</update>
+	<!-- 标过期  修改投资者账户余额 -->
+	<update id="updateTouziUserYueMoney">
+	update user set yuemoney=yuemoney+#{tzm} where id=#{uid}
+	</update>
+	<!-- 查询哪个用户投资了这个过期的标 -->
+	<select id="getTouzis" resultMap="touzitMaps">
+	select t.*,i.uid iuid from touzi t inner join invest i on t.inid=i.id where t.inid=#{id} and i.state=3
+	</select>
+	<!-- 查询标对应的投资列表 -->
+	<select id="getlistTouzi" resultMap="touzitMaps">
+		select t.*,i.*,b.rate,b.tlimit from touzi t left join invest i on t.inid=i.id left join borrow b on i.bid=b.id where t.inid=#{id}
+	</select>
+	<!-- 查询标对应的投资记录 -->
+	<select id="getMyTouZiCount" resultType="int">
+		select count(*) from touzi where inid=#{id}
+	</select>
+	<!-- 查询借款中个数 -->
+	<select id="jeKunZhong" resultType="int">
+		select count(*) from invest where uid=#{id} and state=1
+	</select>
+	<!-- 查询还款中个数 -->
+	<select id="HuanKunZhong" resultType="int">
+		select count(*) from invest where uid=#{id} and state=2
+	</select>
+	<!-- 查询已还款个数 -->
+	<select id="YiHuanKun" resultType="int">
+		select count(*) from invest where uid=#{id} and state=4
+	</select>
+	<!-- 查询我的总借款金额 -->
+	<select id="getZongInvestMoney" resultType="double">
+		select sum(jemoney) from invest where uid=#{id} and state=2
+	</select>
+	<!-- 查询我的借款个数 -->
+	<select id="getCountInve" resultType="int">
+		select count(*) from invest where uid=#{id}
+	</select>
+	<!-- 查询前台标列表 -->
+	<select id="getMyInvest" resultMap="investMaps">
+		select i.*,t.touzimoney,t.id,t.inid,b.* from borrow b INNER JOIN invest i on i.bid=b.id left join touzi t on i.id=t.inid where i.uid=#{id}
+		
+		<if test="state!=null and ''!=state and state==1">
+			and DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(biaodate)
+		</if>
+		<if test="state!=null and ''!=state and state==2">
+			and DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(biaodate)
+		</if>
+		<if test="state!=null and ''!=state and state==3">
+			and DATE_SUB(CURDATE(), INTERVAL 90 DAY) &lt;= date(biaodate)
+		</if>
+		<if test="state!=null and ''!=state and state==4">
+			and i.state=1
+		</if>
+		<if test="state!=null and ''!=state and state==5">
+			and i.state=2
+		</if>
+		<if test="state!=null and ''!=state and state==6">
+			and i.state=3
+		</if>
+		<if test="state!=null and ''!=state and state==7">
+			and i.state=4
+		</if>
+		<if test="start!=null and start!='' and end!=null and end!=''">
+		and date_format(biaodate,'%Y-%m-%d') BETWEEN #{start} AND #{end}
+		</if>
+		order by biaodate desc
+	</select>
+	<!-- 修改状态为过期的标  3 -->
+	<update id="updateStateById">
+		update invest set state=3 where id=#{id}
+	</update>
+	<!-- 查询标详情 -->
+	<select id="showinvestById" resultMap="investMaps">
+		select i.*,t.touzimoney,t.id,t.inid,b.* from borrow b INNER JOIN invest i on i.bid=b.id left join touzi t on i.id=t.inid where i.id=#{id}
+	</select>
+	<!-- getbiaoMoney查询标对应的投资额 -->
+	<select id="getbiaoMoney" resultType="double">
+		SELECT SUM(touzimoney) from touzi where inid=inid GROUP BY inid  
+	</select>
+	<!-- 根据状态查询标列表 -->
+	<select id="getInvestBystate" resultMap="investMaps">
+	select * from invest where state=1
+	</select>
+	<!-- 查询标数量 -->
+	<select id="getbiaosl" resultType="int">
+		select count(id) from invest where state=1
+	</select>
+	<!-- 查询昨天投资总额 -->
+	<select id="getztMoney" resultType="double">
+		select sum(touzimoney) from touzi where TO_DAYS(NOW())-TO_DAYS(touzidate) &lt;= 1
+	</select>
+	<!-- 查询用户总数 -->
+	<select id="getUserCount" resultType="int">
+		select count(id) from user
+	</select>
+	<!-- 查询投资总金额 -->
+	<select id="getTzMoney" resultType="double">
+		select sum(touzimoney) from touzi
+	</select>
+	<!-- 查询前4条标 -->
+	<select id="showInvestTopList" resultMap="investMaps">
+		select i.*,t.touzimoney,t.id,t.inid,b.* from borrow b INNER JOIN invest i on i.bid=b.id left join touzi t on i.id=t.inid
+		where i.state=1
+	</select>
+	<!-- 查询标列表 -->
+	<select id="showInvestList" resultMap="investMaps">
+		select i.*,t.touzimoney,t.id,t.inid,b.* from borrow b INNER JOIN invest i on i.bid=b.id left join touzi t on i.id=t.inid where i.state=1
+	</select>
+</mapper>

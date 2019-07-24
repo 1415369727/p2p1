@@ -1,0 +1,262 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="keywords" content="">
+<meta name="description" content="十七金融">
+<meta name="author" content="十七金融">
+<link href="../../css/css.css" rel="stylesheet">
+ <script src="../../js/jquery.js"></script>
+<link href="favicon.ico" rel="SHORTCUT ICON">
+<title>十七金融</title>
+<style>
+        /*背景层*/
+        #popLayer {
+            display: none;
+            background-color: #B3B3B3;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 10;
+            -moz-opacity: 0.8;
+            opacity:.80;
+            filter: alpha(opacity=80);/* 只支持IE6、7、8、9 */
+        }
+ 
+        /*弹出层*/
+        #popBox {
+            display: none;
+            background-color: #FFFFFF;
+            z-index: 11;
+            width: 1200px;
+            height: 400px;
+            position:fixed;
+            top:0;
+            right:0;
+            left:0;
+            bottom:0;
+            margin:auto;
+        }
+ 
+        #popBox .close{
+            text-align: right;
+            margin-right: 5px;
+            background-color: #F8F8F8;
+        }
+ 
+        /*关闭按钮*/
+        #popBox .close a {
+            text-decoration: none;
+            color: #2D2C3B;
+        }
+ 
+    </style>
+</head>
+<body>
+<!--head-->
+<div class="header" th:replace="templates/header :: header"></div>
+
+<!--main-->
+<div class="wrap mt10 clearfix">
+   <div th:replace="templates/userleft :: userleft"></div>
+  
+  <div class="section fr">
+    <!--My loan-->
+    <div class="pd20 bg-w mt10 bdr">
+      <div class="crumbs"><span>我的借款</span></div>
+      <div class="membox">
+         <p class="f16 c333">
+		         借款项目：<span class="o" th:text="${countinv}"></span>个，&nbsp;&nbsp;
+		         借款金额：<span class="o" th:if="${zonginvestmoney!=null}" th:text="${#numbers.formatDecimal(zonginvestmoney,0,'COMMA',2,'POINT')}"></span>
+		   <span class="o" th:if="${zonginvestmoney==null}" th:text="0.00"></span>      
+		         元&nbsp;&nbsp;
+        
+        <div class="My-investment mt20 clearfix">
+           <div class="item"><div class="box clearfix"><span class="count" th:text="${jeKunZhong}+'个'"></span><em class="invest ico1"></em>借款中款项目</div></div>
+           <div class="item"><div class="box clearfix"><span class="count" th:text="${HuanKunZhong}+'个'"></span><em class="invest ico2"></em>还款中项目</div></div>
+           <div class="item"><div class="box clearfix"><span class="count ico3" th:text="${YiHuanKun}+'个'"></span><em class="invest ico3"></em>已还款项目</div></div>
+         </div> 
+         
+        <!--Transaction Date-->
+        <div class="mt20 clearfix">
+          <div class="tit fl">交易日期</div>
+          <div class="Calendar fl">
+          <form  method="post">
+          <input type="text" readonly th:value="${session.istart}" id="birthday" name="start" class="input_all i_time input_1" style="z-index:1000;position:relative; width:95px"/> - 
+          <input type="text" readonly th:value="${session.iend}" id="birthday2" name="end" class="input_all i_time input_1" style="z-index:1000;position:relative; width:95px"/>
+          </form>
+          </div>
+          <script type="text/javascript">
+          $(function(){
+        	  
+          $(document).keyup(function(event){
+        	  if(event.keyCode == 13){
+        		var start=$("#birthday").val();
+          	    var end=$("#birthday2").val();
+          	    location.href="/invest/myInvest?start="+start+"&end="+end;
+        	  }
+        	});
+          /* function check(){
+        	    var start=$("#birthday").val();
+        	    var end=$("#birthday2").val();
+        	    $.ajax({
+   					url:"[[@{/borrow/myBorrow}]]",
+   					type:"post",
+       				 dataType: 'json',
+                     contentType: 'application/x-www-form-urlencoded',
+   					data:{'start':start,'end':end},
+   					success:function(obj){
+   						
+   					}
+   				});
+         	 } */
+          });
+          </script>
+          <div class="Options fl">
+	          <a th:href="@{/invest/myInvest}" class="active">全部</a>
+	          <a th:href="@{/invest/myInvest(state='1')}">最近一周</a>
+	          <a th:href="@{/invest/myInvest(state='2')}">最近一个月</a>
+	          <a th:href="@{/invest/myInvest(state='3')}">最近三个月</a>
+	      </div>
+        </div>
+        
+        <!--Project Status-->
+        <div class="mt20 clearfix">
+          <div class="tit fl">项目状态</div>
+          <div class="Options f12 fl" style="width:620px;">
+	          <a th:href="@{/invest/myInvest}" class="active">全部</a>
+	          <a th:href="@{/invest/myInvest(state='4')}">借款中项目</a>
+	          <a th:href="@{/invest/myInvest(state='5')}">还款中项目</a>
+	          <a th:href="@{/invest/myInvest(state='6')}">已过期项目</a>
+	           <a th:href="@{/invest/myInvest(state='7')}">已还款项目</a>
+          </div>
+        </div>
+        
+        <!--list-->
+        <table class="Record-tab mt20">
+            <tr>
+            <th width="170">项目名称</th>
+            <th width="115">项目金额</th>
+            <th width="115">月利率</th>
+            <th width="110">借款时间</th>
+            <th width="110">状态</th>
+           
+             <th>操作/查看投资情况</th>
+            </tr>
+         	<tr th:each="l:${invlist}">
+         		<td th:text="${l.proname}"></td>
+         		<td th:text="${#numbers.formatDecimal(l.jemoney,0,'COMMA',2,'POINT')}"></td>
+         		<td  th:text="${l.borrow.rate}+'%'"></td>
+         		<td th:text="${#dates.format(l.biaodate,'yyyy-MM-dd HH:mm:ss')}"></td>
+         		<td th:if="${l.state==1}" th:text="借款中"></td>
+         		<td th:if="${l.state==2}" th:text="还款中"></td>
+         		<td th:if="${l.state==3}" th:text="已过期"></td>
+         		<td th:if="${l.state==4}" th:text="已还款"></td>
+         		<td class="abab">
+         			<sapn th:if="${l.state==1}">
+         			<a id="ckxq" >查看</a>
+         			</sapn>
+         			<sapn th:if="${l.state==2}">
+         				<a th:href="@{/back/showBack(id=${l.id})}">还款</a>
+         			</sapn>
+         			<sapn th:if="${l.state==3}" th:text="已过期"></sapn>
+         			<sapn th:if="${l.state==4}" th:text="已还款"></sapn>
+         		</td>
+         		<input type="hidden" id="ids" th:value="${l.id}"/> 
+         	</tr>
+          </table>
+          
+          <!-- 隐藏div -->
+		<div id="popLayer"></div>
+		<div id="popBox">
+		    <div class="close">
+		        <a href="javascript:void(0)" id="guanbi" onclick="closeBox()">关闭</a>
+		    </div>
+		    <div class="content">
+		    投资详情
+				<table id="toulist" class="Record-tab mt20">
+					<tr>
+						<td>订单号</td>
+						<td>投资人</td>
+						<td>投资金额</td>
+						<td>投资时间</td>
+						
+					</tr>
+					 <tr class="tr2">
+						<!-- <td>
+						<span id="order"></span>
+						</td>
+						<td>
+						<span id="name"></span>
+						</td>
+						<td><span id="money"></span></td>
+						<td><span id="tdate"></span></td> -->
+						
+					</tr>
+					
+				</table>
+			</div>
+		</div>
+       <script type="text/javascript">
+       $(function(){
+    	   $(".abab").each(function(){
+    	  
+       	$(this).click(function(){
+       	 var id=$(this).siblings("#ids").val();
+       		$.ajax({
+       			url:"/borrow/getTouZiByInvid?id="+id,
+       			type:"get",
+       			success:function(data){
+       				for(i in data){
+       					//var date=data[i].touzidate.format("yyyy-MM-dd hh:mm:ss");
+       					$("#toulist").append("<tr><td>"+data[i].orderid+"</td><td>"+data[i].tuser.name+"</td><td>"+data[i].touzimoney+"</td><td>"+data[i].tdate+"</td></tr>");
+       			
+       				}
+       			}
+       		});
+       		var popBox = document.getElementById("popBox");
+            var popLayer = document.getElementById("popLayer");
+            popBox.style.display = "block";
+            popLayer.style.display = "block";
+
+       	});
+    	   });
+       	$("#guanbi").click(function(){
+       		var popBox = document.getElementById("popBox");
+            var popLayer = document.getElementById("popLayer");
+            popBox.style.display = "none";
+            popLayer.style.display = "none";
+			location.href="/invest/myInvest";
+       	});
+       }); 
+       </script>
+          
+          
+        
+        <!--Pagination-->
+        <div class="Pagination mt20 tr clearfix">
+			
+				<a th:if="${page.hasPreviousPage }" class="prev" th:href="@{/invest/myInvest(pn=${page.prePage},state=${session.instate},start=${session.istart},end=${session.iend})}"><em></em>上一页</a>
+			
+				
+					<a th:each="i:${#numbers.sequence(1,page.pages)}" th:href="@{/invest/myInvest(pn=${i },state=${session.instate},start=${session.istart},end=${session.iend})}" th:text="${i }"></a> 
+				
+			
+			
+				<a th:if="${page.hasNextPage }" class="next" th:href="@{/invest/myInvest(pn=${page.nextPage},state=${session.instate},start=${session.istart},end=${session.iend})}">下一页<em></em></a>
+			
+			
+      </div>
+        
+      </div>    
+      
+    </div>
+    
+  </div>
+  
+</div>
+<div th:replace="templates/footer :: footer"></div>
+</body>
+</html>

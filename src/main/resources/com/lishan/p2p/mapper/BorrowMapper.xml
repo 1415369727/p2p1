@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lishan.p2p.mapper.BorrowMapper" >
+<resultMap type="com.lishan.p2p.pojo.Borrow" id="borrowMap">
+	<id column="id" property="id"></id>
+    <result column="jemoney" property="jemoney"/>
+    <result column="sqdate" property="sqdate"  />
+    <result column="rate" property="rate"/>
+    <result column="tlimit" property="tlimit"  />
+    <result column="state" property="state" />
+    <result column="tel" property="tel" />
+    <result column="yuecom" property="yuecom" />
+    <result column="uid" property="uid" />
+    <association property="users" javaType="com.lishan.p2p.pojo.User">
+    	<id column="userid" property="id"></id>
+	    <result column="username" property="username"/>
+	    <result column="password" property="password"  />
+	    <result column="sex" property="sex"/>
+	    <result column="name" property="name"  />
+	    <result column="address" property="address" />
+	    <result column="birthday" property="birthday" />
+	    <result column="carID" property="carID" />
+	    <result column="yuemoney" property="yuemoney" />
+	    <result column="phone" property="phone" />
+	    <result column="email" property="email" />
+	    <result column="state" property="state" />
+	    <result column="dealpass" property="dealpass" />
+    </association>
+</resultMap>
+	<resultMap type="com.lishan.p2p.pojo.Invest" id="investMap">
+		<id column="id" property="id"></id>
+		<result column="proname" property="proname"/>
+		<result column="starttime" property="starttime"/>
+		<result column="endtime" property="endtime"/>
+		<result column="biaolimit" property="biaolimit"/>
+		<result column="state" property="state"/>
+		<result column="biaodate" property="biaodate"/>
+		<result column="jemoney" property="jemoney"/>
+		<result column="bid" property="bid"/>
+		<result column="des" property="des"/>
+		<result column="xydj" property="xydj"/>
+		<result column="uid" property="uid"/>
+		<result column="touziMoney" property="touziMoney"/>
+		<result column="backMoney" property="backMoney"/>
+			<association property="borrow" javaType="com.lishan.p2p.pojo.Borrow">
+				<id column="borid" property="id"></id>
+			    <result column="jemoney" property="jemoney"/>
+			    <result column="sqdate" property="sqdate"  />
+			    <result column="rate" property="rate"/>
+			    <result column="tlimit" property="tlimit"  />
+			    <result column="brostate" property="state" />
+			    <result column="tel" property="tel" />
+			    <result column="yuecom" property="yuecom" />
+			    <result column="uid" property="uid" />
+			     <association property="users" javaType="com.lishan.p2p.pojo.User">
+			    	<id column="userid" property="id"></id>
+				    <result column="username" property="username"/>
+				    <result column="password" property="password"  />
+				    <result column="sex" property="sex"/>
+				    <result column="name" property="name"  />
+				    <result column="address" property="address" />
+				    <result column="birthday" property="birthday" />
+				    <result column="carID" property="carID" />
+				    <result column="yuemoney" property="yuemoney" />
+				    <result column="phone" property="phone" />
+				    <result column="email" property="email" />
+				    <result column="usstate" property="state" />
+				    <result column="dealpass" property="dealpass" />
+			    </association>
+			</association>
+	</resultMap>
+		<resultMap type="com.lishan.p2p.pojo.Touzi" id="touzitMaps">
+		<id column="id" property="id"></id>
+		<result column="orderid" property="orderid"/>
+		<result column="uid" property="uid"/>
+		<result column="inid" property="inid"/>
+		<result column="state" property="state"/>
+		<result column="touzidate" property="touzidate"/>
+		<result column="touzimoney" property="touzimoney"/>
+		<result column="biaoMoney" property="biaoMoney"/>
+		<association property="tuser" javaType="com.lishan.p2p.pojo.User">
+	    	<id column="tid" property="id"></id>
+		    <result column="tusername" property="username"/>
+		    <result column="password" property="password"  />
+		    <result column="sex" property="sex"/>
+		    <result column="tname" property="name"  />
+		    <result column="address" property="address" />
+		    <result column="birthday" property="birthday" />
+		    <result column="carID" property="carID" />
+		    <result column="yuemoney" property="yuemoney" />
+		    <result column="phone" property="phone" />
+		    <result column="email" property="email" />
+		    <result column="state" property="state" />
+		    <result column="dealpass" property="dealpass" />
+	    </association>
+	</resultMap>
+	
+	<!-- 前台根据标id查询投资列表 -->
+	<select id="getTouZiByInvid" resultMap="touzitMaps">
+		select t.*,u.name tname from touzi t left join user u on u.id=t.uid where t.inid=#{id}
+	</select>
+	<!-- 查询用户状态 -->
+	<select id="getUserState" resultType="string">
+		select state from user where id=#{id}
+	</select>
+	<!-- 发布标插入消息 -->
+	<insert id="insertMassageByInvest" parameterType="com.lishan.p2p.pojo.Massage">
+		insert into massage(uid,des,msgdate,state) 
+		values(#{uid},#{des},#{msgdate},1)
+	</insert>
+	<!-- 审核通过插入消息 -->
+	<insert id="insertMassage" parameterType="com.lishan.p2p.pojo.Massage">
+		insert into massage(uid,des,msgdate,state) 
+		values(#{uid},#{des},#{msgdate},1)
+	</insert>
+	<!-- 插入借款的交易 -->
+	<insert id="insertRecord" parameterType="com.lishan.p2p.pojo.Record">
+		insert into record(recorddate,recordtype,uid,recordmoney,jyuid) values
+		(#{recorddate},2,#{uid},#{recordmoney},#{jyuid})
+	</insert>
+	<!-- 查询标列表 -->
+	<select id="showInvest" resultMap="investMap">
+	select i.*,b.*,u.* from invest i left join borrow b on b.id=i.bid left join user u on u.id=b.uid
+	</select>
+	<!-- 后台发标修改申请表的状态为 4 -->
+	<update id="updateStateToFaBiao">
+		update borrow set state=4 where id=#{bid}
+	</update>
+<!-- 查询标列表 -->
+<select id="showInvestList" resultMap="investMap">
+	select i.*,b.*,u.* from invest i left join borrow b on b.id=i.bid left join user u on u.id=b.uid 
+	<where>
+		<if test="start!=null and start!='' and end!=null and end!='' ">
+			date_format(i.biaodate,'%Y-%m-%d %H:%m:%s') BETWEEN #{start} AND #{end}
+		</if>
+		<if test="names!=null and names!='' ">
+		 or u.username like '%${names}%' or u.name like '%${names}%'
+		</if>
+	</where>
+	order by i.biaodate desc
+</select>
+<!-- 发布标 -->
+<insert id="insertInvest" parameterType="com.lishan.p2p.pojo.Invest">
+	insert into invest(proname,biaolimit,biaodate,jemoney,bid,des,xydj,uid) 
+	values(#{proname},#{biaolimit},#{biaodate},#{jemoney},#{bid},#{des},#{xydj},#{uid})
+</insert>
+<!-- 后台发标根据申请id查询申请 -->
+<select id="getMyByBorrowId" resultMap="borrowMap">
+	select * from borrow where id=#{id}
+</select>
+<!-- 前台查询借款列表 -->
+<select id="getMyByBorrow" resultMap="borrowMap">
+	select * from borrow where uid=#{uid}
+	<if test="starttime!=null and starttime!='' and endtime!=null and endtime!=''">
+		and date_format(sqdate,'%Y-%m-%d') BETWEEN #{starttime} AND #{endtime}
+	</if>
+	<if test="state!=null and ''!=state and state==1">
+		and DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(sqdate)
+	</if>
+	<if test="state!=null and ''!=state and state==2">
+		and DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(sqdate)
+	</if>
+	<if test="state!=null and ''!=state and state==3">
+		and DATE_SUB(CURDATE(), INTERVAL 90 DAY) &lt;= date(sqdate)
+	</if>
+	<if test="state!=null and ''!=state and state==4">
+		and state=1
+	</if>
+	<if test="state!=null and ''!=state and state==5">
+		and state=2
+	</if>
+	<if test="state!=null and ''!=state and state==6">
+		and state=3
+	</if>
+	<if test="state!=null and ''!=state and state==7">
+		and state=4
+	</if>
+	order by sqdate desc
+</select>
+<!-- 借款申请审核不通过 -->
+<update id="updateBuTongg">
+	update borrow set state=3 where id=#{id}
+</update>
+<!-- 借款申请审核通过 -->
+<update id="updateTongg">
+	update borrow set state=2 where id=#{id}
+</update>
+<!-- 根据时间查询列表 -->
+<select id="showBorrowByDate" resultMap="borrowMap">
+	select b.*,u.* from borrow b left join user u on b.uid=u.id 
+	<where>
+		<if test="start!=null and start!='' and end!=null and end!='' ">
+			date_format(b.sqdate,'%Y-%m-%d %H:%m:%s') BETWEEN #{start} AND #{end}
+		</if>
+		<if test="names!=null and names!='' ">
+		 or u.username like '%${names}%' or u.name like '%${names}%'
+		</if>
+		
+	</where>
+	order by b.sqdate desc
+</select>
+<!-- 查询申请列表 -->
+<select id="showBorrow" resultMap="borrowMap">
+	select b.*,u.* from borrow b left join user u on b.uid=u.id
+</select>
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<!-- 获取利率 -->
+	<select id="getRate" resultType="com.lishan.p2p.pojo.Rate">
+		select * from rate
+	</select>
+	<!-- 获取期限 -->
+	<select id="getDateLimitByRate" resultType="int">
+		select datelimit from rate where rate=#{rate}
+	</select>
+	<!-- 提交借款申请 -->
+	<insert id="insertBorrow" parameterType="com.lishan.p2p.pojo.Rate">
+		insert into borrow (jemoney,sqdate,rate,tlimit,tel,yuecom,uid) values(#{jemoney},#{sqdate},#{rate},#{tlimit},#{tel},#{yuecom},#{uid})
+	</insert>
+</mapper>

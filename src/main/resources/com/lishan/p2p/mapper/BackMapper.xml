@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lishan.p2p.mapper.BackMapper" >
+	
+	<resultMap type="com.lishan.p2p.pojo.Invest" id="investMapb">
+		<id column="id" property="id"></id>
+		<result column="proname" property="proname"/>
+		<result column="starttime" property="starttime"/>
+		<result column="endtime" property="endtime"/>
+		<result column="biaolimit" property="biaolimit"/>
+		<result column="state" property="state"/>
+		<result column="biaodate" property="biaodate"/>
+		<result column="jemoney" property="jemoney"/>
+		<result column="bid" property="bid"/>
+		<result column="des" property="des"/>
+		<result column="xydj" property="xydj"/>
+		<result column="uid" property="uid"/>
+		<result column="touziMoney" property="touziMoney"/>
+		<result column="backMoney" property="backMoney"/>
+			<association property="borrow" javaType="com.lishan.p2p.pojo.Borrow">
+				<id column="borid" property="id"></id>
+			    <result column="jemoney" property="jemoney"/>
+			    <result column="sqdate" property="sqdate"  />
+			    <result column="rate" property="rate"/>
+			    <result column="tlimit" property="tlimit"  />
+			    <result column="brostate" property="state" />
+			    <result column="tel" property="tel" />
+			    <result column="yuecom" property="yuecom" />
+			    <result column="uid" property="uid" />
+			    
+			</association>
+	</resultMap>
+	
+	<resultMap type="com.lishan.p2p.pojo.Touzi" id="touzitMaps">
+		<id column="id" property="id"></id>
+		<result column="orderid" property="orderid"/>
+		<result column="uid" property="uid"/>
+		<result column="inid" property="inid"/>
+		<result column="state" property="state"/>
+		<result column="touzidate" property="touzidate"/>
+		<result column="touzimoney" property="touzimoney"/>
+		<result column="biaoMoney" property="biaoMoney"/>
+		<association property="invest" javaType="com.lishan.p2p.pojo.Invest">
+				<id column="iid" property="id"></id>
+				<result column="proname" property="proname"/>
+				<result column="starttime" property="starttime"/>
+				<result column="endtime" property="endtime"/>
+				<result column="biaolimit" property="biaolimit"/>
+				<result column="istate" property="state"/>
+				<result column="biaodate" property="biaodate"/>
+				<result column="jemoney" property="jemoney"/>
+				<result column="bid" property="bid"/>
+				<result column="des" property="des"/>
+				<result column="xydj" property="xydj"/>
+				<result column="uid" property="uid"/>
+				<result column="touziMoney" property="touziMoney"/>
+				<result column="backMoney" property="backMoney"/>
+					<association property="borrow" javaType="com.lishan.p2p.pojo.Borrow">
+						<id column="borid" property="id"></id>
+					    <result column="jemoney" property="jemoney"/>
+					    <result column="sqdate" property="sqdate"  />
+					    <result column="rate" property="rate"/>
+					    <result column="tlimit" property="tlimit"  />
+					    <result column="brostate" property="state" />
+					    <result column="tel" property="tel" />
+					    <result column="yuecom" property="yuecom" />
+					    <result column="uid" property="uid" />
+					    </association>
+				</association>
+					
+	</resultMap>
+	
+	
+	<!-- 获取还款次数 -->
+	<select id="getHkNum" resultType="int">
+		select count(*) from back where uid=#{uid} and invid=#{invid}
+	</select>
+	<!-- 每个投资人插入消息 -->
+	<insert id="insertEverTouziSK">
+		insert into massage(uid,des,msgdate,state) 
+		values(#{uid},#{des},#{msgdate},1)
+	</insert>
+	<!-- 每次还款插入还款人消息 -->
+	<insert id="insertEverHuank">
+		insert into massage(uid,des,msgdate,state) 
+		values(#{uid},#{des},#{msgdate},1)
+	</insert>
+	<!-- 还款成功插入消息 -->
+	<insert id="insertMassageByfinishHuan">
+		insert into massage(uid,des,msgdate,state) 
+		values(#{uid},#{des},#{msgdate},1)
+	</insert>
+	<!-- 修改投资状态 -->
+	<update id="updateTouziState">
+		update touzi set state=2 where inid=#{id}
+	</update>
+	<!-- 查询还款时间列表 -->
+	<select id="getDateByUid" resultType="com.lishan.p2p.pojo.Back">
+		select * from back where uid=#{uid} and invid=#{invid}
+	</select>
+	<!-- 插入回款交易 -->
+	<insert id="updateRecordHuiKuan" parameterType="com.lishan.p2p.pojo.Record">
+	insert into record(recorddate,recordtype,uid,recordmoney,jyuid) 
+	values(#{recorddate},6,#{uid},#{recordmoney},#{jyuid})
+	</insert>
+	<!-- 插入还款交易内容 -->
+	<insert id="insertRecord" parameterType="com.lishan.p2p.pojo.Record">
+	insert into record(recorddate,recordtype,uid,recordmoney,jyuid) 
+	values(#{recorddate},5,#{uid},#{recordmoney},#{jyuid})
+	</insert>
+	<!-- 修改投资用户的账户余额 和收益金额 -->
+	<update id="updateInvestMoney">
+		update user set yuemoney=yuemoney+#{zshouyi},shouyimoney=shouyimoney+#{shouyi}
+		where id=#{uid}
+	</update>
+	<!-- 根据标id查询投资人列表 -->
+	<select id="getTouzis" resultMap="touzitMaps">
+		select t.*,i.*,b.* from touzi t left join invest i on t.inid=i.id left join borrow b on i.bid=b.id
+		 where t.inid=#{id}
+	</select>
+	<!-- 修改还款人余额 -->
+	<update id="updateHkUserYue">
+		update user set yuemoney=yuemoney-#{huankmoney} where id=#{uid}
+	</update>
+	<!-- 还款完成修改标状态 -->
+	<update id="updateInvestState">
+		update invest set state=4 where id=#{id}
+	</update>
+	<!-- 还款时修改标中的还款金额 -->
+	<update id="updateInvibackMoney">
+		update invest set backMoney=backMoney+#{hkmoney} where id=#{invid}
+	</update>
+	
+	<!-- 获取标的信息 -->
+	<select id="getInvestById" resultMap="investMapb">
+		select i.*,b.* from invest i left join borrow b on i.bid=b.id where i.id=#{id}
+	</select>
+	
+	<!-- 还款 -->
+	<insert id="backMoney" parameterType="com.lishan.p2p.pojo.Back">
+		insert into back(uid,invid,huankmoney,huankdate) values
+		(#{uid},#{invid},#{huankmoney},#{huankdate})
+	</insert>
+	
+</mapper>

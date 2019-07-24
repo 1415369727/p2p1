@@ -1,0 +1,205 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="keywords" content="">
+<meta name="description" content="十七金融">
+<meta name="author" content="十七金融">
+<link href="../../css/css.css" rel="stylesheet">
+ <script src="../../js/jquery.js"></script>
+<script src="../../js/jquery.tabso_yeso.js"></script>
+   <script type="text/javascript">
+    
+		$(document).ready(function($){
+			
+			$("#normaltab").tabso({
+				cntSelect:"#normalcon",
+				tabEvent:"click",
+				tabStyle:"normal"
+			});
+		});
+		
+	</script>
+<link href="favicon.ico" rel="SHORTCUT ICON">
+<title>十七金融</title>
+</head>
+
+<body>
+<!--head-->
+<div class="header" th:replace="templates/header :: header"></div>
+
+<!--main-->
+<div class="wrap mt10">
+  <div class="bg-w bdr">
+    <div class="pd20">
+      <!--invest-->
+      <div class="crumbs clearfix" style="margin-bottom:20px;">
+      <a th:href="@{/invest/showInvestList}" class="ico back">返回</a>
+      <span>我要投资</span>
+     <a th:if="${session.user==null}" href="#" class="ico Prompt indent loginbtn">您尚未登录</a>
+    <span th:if="${session.user!=null}"  class="ico Prompt loginbtn" th:text="欢迎：+${session.user.name}"></span>
+      
+      </div>
+      
+      <div class="pd10 clearfix">
+        <div class="lbox bdr fl">
+          <div class="title" th:text="${invest.proname}">阿里巴巴实力大卖家，二次借款</div>
+          <div class="pd20"> 
+            <div class="line clearfix">
+              <div class="item first">
+                融资金额
+                <p class="mt30"><span><span class="f30">&yen;</span><span class="o" th:text="${#numbers.formatDecimal(invest.jemoney,0,'COMMA',2,'POINT')}">16,000</span></span></p>
+              </div>
+              <div class="item second">
+                借款年利率
+                <p class="mt30"><span th:text="${#numbers.formatDecimal(invest.borrow.rate*12,0,2)}"></span><span class="f24">%</span></p>
+              </div>
+              <div class="item third">
+                期限
+                <p class="mt30"><span th:text="${invest.borrow.tlimit}"></span><span class="f24">月</span></p>
+              </div>
+            </div>
+            <div class="txt mt20">
+              <p>每月返还本息<em class="ico Prompt"></em>&yen;<span th:text="${#numbers.formatDecimal(((invest.borrow.rate/100)*invest.jemoney)+(invest.jemoney/invest.borrow.tlimit),0,'COMMA',2,'POINT')}"></span></p>
+              <b>借款用途说明</b> 客户在广西省某国营企业工作，收入稳定，本借款用于资金周转。本借款已通过利信快捷及
+融桥担保审核并被推荐至十七金融；推荐方提供全额本息担保。十七金融于……<!--<a href="#" class="o">[详情]</a>--></div>
+          </div>
+          
+          <div class="line2 tc">
+            <div class="item tl"><span class="process"><span class="process-bar" th:style="'width:'+*{#numbers.formatDecimal((invest.touziMoney/invest.jemoney)*100,0,0)}+'%'"></span></span><span th:text="${#numbers.formatDecimal((invest.touziMoney/invest.jemoney)*100,0,0)}+'%'"></span></div>
+            <div class="item">时间剩余<span th:text="${day}"></span>天<span th:text="${hour}"></span>小时<span th:text="${min}"></span>分</div>
+            <div class="item bd0 b o"><em class="ico Guarantee"></em>100%本息担保</div>
+          </div>
+          
+        </div>
+        <div class="rbox bdr fr">
+          <div class="title clearfix">
+          <span th:if="${invest.touziMoney!=null}" th:text="'可投'+${#numbers.formatDecimal(invest.jemoney-invest.touziMoney,0,'COMMA',2,'POINT')}"></span>
+           <span th:if="${invest.touziMoney==null}" th:text="'可投'+${#numbers.formatDecimal(invest.jemoney,0,'COMMA',2,'POINT')}"></span>
+          </div>
+          <div class="pd20">
+            <input type="text" id="tzmoney" placeholder="请输入50~12150的整数" class="Amount" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" maxlength="6">元
+            <div class="mt10">预期收益：<span id="yqshouyi">0.00</span><br>担保机构：安徽融桥担保股份有限公司</div>
+           
+            <a id="touzi" class="button ico btn-Investment">我要投资</a>
+            <input th:value="${invest.id}" id="invid" type="hidden">
+            <input th:value="${#numbers.formatDecimal(invest.jemoney-invest.touziMoney,0,0)}" id="symoney" type="hidden">
+            <input th:value="${invest.uid}" id="uids" type="hidden">
+            <input th:value="${invest.borrow.rate/100*invest.borrow.tlimit}" id="rate" type="hidden">
+            <div class="txt">十七金融及其合作机构将始终秉持客观公正的原则，严控风险，最大程度的尽力确保借入者信息的真实性。</div>
+          </div>
+          <script type="text/javascript">
+	        
+          	$(function(){
+          	 //判断输入的不能大于剩余的
+	    		$("#tzmoney").keyup(function(){
+	    			var tzmoney=$("#tzmoney").val();
+	    			var rate=$("#rate").val();
+	    			var shouyi=tzmoney*rate;
+	    			var sy=shouyi.toFixed(2);
+	    			
+	    			$("#yqshouyi").html(sy);
+	    		}); 
+          	
+          		var invid=$("#invid").val();
+          		
+          		//投资
+          		$("#touzi").click(function(){
+          			var tzmoney=$("#tzmoney").val();
+          			var symoney=$("#symoney").val();
+          			var uid=$("#uids").val();
+          			var ts=confirm("您确定要投资该标吗？");	
+        			if(ts==true){
+          			$.ajax({
+          				url:'/touzi/insertTouZi',
+          				type:'post',
+          				data:{"invid":invid,"tzmoney":tzmoney,"symoney":symoney,"uid":uid},
+          				success:function(obj){
+          					if(obj==1){
+          						alert("已投资成功，请到我的投资中查看详情");
+          						location.href="/touzi/myTouZiList";
+          					}if(obj==2){
+          						alert("抱歉，您还没有登陆，登陆后才可以投资");
+          					}if(obj==3){
+          						alert("您的投资金额不能大于可投资金额");
+          					}if(obj==4){
+          						alert("您的投资金额不能为空");
+          					}if(obj==5){
+          						alert("您的余额不足，请先充值");
+          					}
+          				}
+          			});
+        			}
+          		});	
+          	});
+          </script>
+        </div>
+      </div>
+      
+    </div>
+    
+	<ul class="tabbtn clearfix" id="normaltab">
+      <li class="current">产品详情</li>
+      <li>投资记录<em class="count" th:text="${mytouziCount}"></em></li>
+	</ul>
+	<div class="tabcon" id="normalcon">
+      <div class="sublist Product-Details pd30 clearfix">
+        <div class="txt fl">
+          <p th:text="${invest.des}"></p><br>
+
+          <p><b>信用审核记录</b><br>十七金融将以客观、公正、严谨、透明的原则，最大程度地核实借入者信息的真实性，但不保证审核信息100%真实。 如果借入者长期逾期，其提供的信息将被“十七金融”平台公布。</p><br>
+          <p><b>信用审核记录</b><br>十七金融将以客观、公正、严谨、透明的原则，最大程度地核实借入者信息的真实性，但不保证审核信息100%真实。 如果借入者长期逾期，其提供的信息将被“十七金融”平台公布。</p>
+        </div>
+        <div class="Credit-Report fr">
+          <dl>
+            <dt><a href="#" class="img"><img src="../../upload/img6.jpg"></a></dt>
+            <dd><a href="#">信用报告</a></dd>
+          </dl>
+          <dl>
+            <dt><a href="#" class="img"><img src="../../upload/img6.jpg"></a></dt>
+            <dd><a href="#">信用报告</a></dd>
+          </dl>
+          <dl>
+            <dt><a href="#" class="img"><img src="../../upload/img6.jpg"></a></dt>
+            <dd><a href="#">信用报告</a></dd>
+          </dl>
+          <dl>
+            <dt><a href="#" class="img"><img src="../../upload/img6.jpg"></a></dt>
+            <dd><a href="#">信用报告</a></dd>
+          </dl>
+        </div>
+      </div>
+      <div class="sublist Investment-records pd30 clearfix">
+        	<!--list-->
+        <table class="Record-tab mt20">
+            <tr>
+            <th width="135">订单号</th>
+            <th width="135">项目名称</th>
+            <th width="105">投资金额</th>
+            <th width="100">年利率</th>
+            <th width="145">投资时间</th>
+            <th width="80">待还利息</th>
+            
+            <tr th:each="l:${tlist}">
+            <td class="tl" th:text="${l.orderid}">201410282710792166</td>
+            <td th:text="${l.invest.proname}">安捷宝（第一期）002</td>
+            <td class="o" th:text="${l.touzimoney}">100.00元</td>
+            <td th:text="${#numbers.formatDecimal(l.invest.borrow.rate*12,0,0)}+'%'">13.80%+2.20%</td>
+            <td th:text="${#dates.format(l.touzidate,'yyyy-MM-dd HH:mm:ss')}">2013-01-5 22:24:55</td>
+            <td><span class="o" th:text="${#numbers.formatDecimal(l.invest.borrow.rate/100*l.touzimoney*l.invest.borrow.tlimit,0,2)}">5.34</span>元</td>
+            
+           
+          </table>
+      </div>
+	</div>
+    
+  
+  </div>
+  
+  <div class="ad img mt20"><img src="../../images/ad.jpg"></div>
+  
+
+</div>
+<div th:replace="templates/footer :: footer"></div>
+</body>
+</html>

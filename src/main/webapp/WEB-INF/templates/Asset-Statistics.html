@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="keywords" content="">
+<meta name="description" content="十七金融">
+<meta name="author" content="十七金融">
+<link href="../../css/css.css" rel="stylesheet">
+<link href="favicon.ico" rel="SHORTCUT ICON">
+<title>十七金融</title>
+</head>
+<body>
+<!--head-->
+<div class="header" th:replace="templates/header :: header"></div>
+<!--main-->
+<div class="wrap mt10 clearfix">
+  <div th:replace="templates/userleft :: userleft"></div>
+  
+  <div class="section fr">
+    <!--Asset Statistics-->
+    <div class="pd20 bg-w mt10 bdr">
+      <div class="crumbs"><span>资产统计</span></div>
+      <div class="Asset-Statistics clearfix">
+        <div class="item">
+          账户余额
+          <h1 th:if="${yuemoney!=0}" th:text="${#numbers.formatDecimal(yuemoney,0,'COMMA',2,'POINT')}+'元'"></h1>
+           <h1 th:if="${yuemoney==0}" th:text="0.00+'元'"></h1>
+        </div>
+        <div class="item">
+          <a th:href="@{/user/showRecharge}" class="button ico Bid mt5">充值</a>
+          
+          <a th:if="${session.user.yuemoney!=0}" th:href="@{/user/shoWdrawals}" class="button ico Bid mt5">提现</a>
+          <a th:if="${session.user.yuemoney==0}"  class="button ico Repayment mt10">提现</a>
+        </div>
+        <div class="item">
+          资
+          产总计
+<h1 th:if="${yuemoney+session.user.djmoney!=0}" th:text="${#numbers.formatDecimal(yuemoney+session.user.djmoney,0,'COMMA',2,'POINT')}+'元'">0.00元</h1>
+<h1 th:if="${yuemoney+session.user.djmoney==0}" th:text="0.00+'元'">0.00元</h1>
+        </div>
+        <div class="item">
+          冻结资金
+          <h1 th:if="${session.user.djmoney!=0}" th:text="${#numbers.formatDecimal(session.user.djmoney,0,'COMMA',2,'POINT')}+'元'">0.00元</h1>
+          <h1 th:if="${session.user.djmoney==0}" th:text="0.00+'元'">0.00元</h1>
+        </div>
+        <div class="item">
+          已收总额
+          <h1 th:if="${session.user.shouyimoney!=0}" th:text="${#numbers.formatDecimal(session.user.shouyimoney,0,'COMMA',2,'POINT')}+'元'">0.00元</h1>
+          <h1 th:if="${session.user.shouyimoney==0}" th:text="0.00+'元'">0.00元</h1>
+        </div>
+      </div>
+    </div>
+    
+    <!--My investment-->
+    <div class="pd20 bg-w mt10 bdr">
+      <div class="crumbs"><span>我的投资</span></div>
+      <div class="My-investment clearfix">
+      <div class="item"><div class="box clearfix"><span class="money" th:if="${myztje!=0}" th:text="${#numbers.formatDecimal(myztje,0,'COMMA',2,'POINT')}+'元'"></span>
+        <span class="money" th:if="${myztje==0}" th:text="0.00+'元'"></span>
+        <em class="invest">投</em>总投资金额</div></div>
+        
+        <div class="item"><div class="box clearfix"><span class="money" th:if="${session.user.shouyimoney!=0}" th:text="${#numbers.formatDecimal(session.user.shouyimoney,0,'COMMA',2,'POINT')}+'元'"></span>
+        <span class="money" th:if="${session.user.shouyimoney==0}" th:text="0.00+'元'"></span>
+        <em class="invest">投</em>总投收益</div></div>
+        <div class="item"><div class="box clearfix">
+        <span class="money" th:if="${DsbjMoney!=0}" th:text="${#numbers.formatDecimal(DsbjMoney,0,'COMMA',2,'POINT')}+'元'"></span>
+        <span class="money" th:if="${DsbjMoney==0}" th:text="0.00+'元'"></span>
+        <em class="invest">投</em>待收本金</div></div>
+        <div class="item"><div class="box clearfix"><span class="money" th:if="${DshouSy!=0}" th:text="${#numbers.formatDecimal(DshouSy,0,'COMMA',2,'POINT')}+'元'"></span>
+        <span class="money" th:if="${DshouSy==0}" th:text="0.00+'元'"></span>
+        <em class="invest">投</em>待收收益</div></div>
+      </div>
+    </div>
+    
+    <!--My loan-->
+    <div class="pd20 bg-w mt10 bdr">
+      <div class="crumbs"><span>我的借款</span></div>
+      <div class="My-investment My-loan clearfix">
+        <div class="item"><div class="box clearfix">
+        <span class="money" th:if="${myzjje!=0}" th:text="${#numbers.formatDecimal(myzjje,0,'COMMA',2,'POINT')}+'元'"></span>
+        <span class="money" th:if="${myzjje==0}" th:text="0.00+'元'"></span>
+        <em class="invest">债</em>借入资金额</div></div>
+        <div class="item"><div class="box clearfix">
+        <span class="money" th:if="${myYhk!=0}" th:text="${#numbers.formatDecimal(myYhk,0,'COMMA',2,'POINT')}+'元'"></span>
+          <span class="money" th:if="${myYhk==0}" th:text="0.00+'元'"></span>
+        <em class="invest">债</em>已还款总额</div></div>
+        <div class="item"><div class="box clearfix">
+        <span class="money" th:if="${WeiHkMoney!=0}" th:text="${#numbers.formatDecimal(WeiHkMoney,0,'COMMA',2,'POINT')}+'元'"></span>
+        <span class="money" th:if="${WeiHkMoney==0}" th:text="0.00+'元'"></span>
+        <em class="invest">债</em>未还款总额</div></div>
+        <div class="item"><div class="box clearfix">
+        <span class="money" th:if="${ZuiJinMoney!=0}" th:text="${#numbers.formatDecimal(ZuiJinMoney,0,'COMMA',2,'POINT')}+'元'"></span>
+        <span class="money" th:if="${ZuiJinMoney==0}" th:text="0.00+'元'"></span>
+        <em class="invest">债</em>最近应还款金额</div></div>
+      </div>
+    </div>
+    
+  </div>
+  
+</div>
+
+<div th:replace="templates/footer :: footer"></div>
+</body>
+</html>

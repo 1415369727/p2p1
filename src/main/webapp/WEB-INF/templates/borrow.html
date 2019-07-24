@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="keywords" content="">
+<meta name="description" content="十七金融">
+<meta name="author" content="十七金融">
+<link href="../../css/css.css" rel="stylesheet">
+
+<link href="favicon.ico" rel="SHORTCUT ICON">
+<title>十七金融</title>
+</head>
+<body cur="2">
+<!--head-->
+<div class="header" th:replace="templates/header :: header"></div>
+
+<!--main-->
+<div class="wrap mt10">
+  <div class="tc"><img src="../../images/step.png"></div>
+  <div class="clearfix">
+    <!--img-->
+    <div class="img loans-img bdr fl">
+      <div class="lj indent">ico</div>
+      <img src="../../images/img6.jpg">
+    </div>
+    <div class="formbox bdr fr">
+      <table class="productForm">
+
+      <form th:action="@{/borrow/insertBorrow}" method="post">
+        <tr>
+          <th>移动电话</th>
+          <td>
+            <label class="touzi01">
+              <input type="text" id="mobile" name="tel" class="input_all input_1" maxlength="11" placeholder="请输入11位手机号"/>
+            </label>
+            <div class="tishi"><span id="mobileError" class="prompt_2 hidden"></span></div>
+          </td>
+        </tr>
+       
+       
+        <tr>
+          <th>借款金额</th>
+          <td>
+            <label class="touzi01">
+              <input type="text" id="loanAmounts" name="jemoney" class="input_all i_yuan input_1" maxlength="7" placeholder="3万-30万"/>
+             
+            </label>
+            <div class="tishi"><span id="amountError" class="prompt_2 hidden"></span></div>
+          </td>
+        </tr>
+        <tr>
+          <th>借款期限</th>
+          <td>
+            <select id="js_dueId" name="rate" class="select1">
+            <option th:each="u:${list}" th:value="${u.rate}" th:text="${u.datelimit}+'个月'"></option>
+            
+            </select>
+            <div class="tishi"></div>
+          </td>
+        </tr>
+        <tr>
+          <th>月均收入</th>
+          <td>
+            <label class="touzi01">
+              <input type="text" id="income" name="yuecom" class="input_all i_yuan input_1" maxlength="9" placeholder="请填写月收入金额"/>
+            </label>
+            <div class="tishi"><span id="incomeError" class="prompt_2 hidden"></span></div>
+          </td>
+        </tr>
+        <tr>
+         <th style="text-align: center;font-size: 20px"> <span style="color: red" th:text="${msg}"></span><span style="color: green" th:text="${msgs}"></span></th>
+          <td><input type="submit" id="save" value="立即申请" class="btn btnSize_6 btn_orange" />
+         
+          </td>
+        </tr>
+       
+       </form>
+      </table>
+    </div>
+  </div>
+  
+  <div class="detailsBox mt20 clearfix">
+    <div class="item first">
+       <div class="title">申请资格</div>
+       <ul class=" mt10 cicle">
+         <li>年龄23周岁-60周岁的中国大陆公民（港、澳、台除外）</li>
+         <li>企业或商户经营时间满1年及以上</li>
+         <li>企业或商户月均流水须3万以上</li>
+       </ul>
+    </div>
+    <div class="item">
+       <div class="title">额度期限</div>
+       <ul class=" mt10 cicle">
+         <li>借款额度：3万-30万元</li>
+         <li>借款期限：12、18、24个月</li>
+         <li>还款方式：等额本息，每月还款</li>
+       </ul>
+    </div>
+    <div class="item bd0">
+       <div class="title">所需材料</div>
+       <ul class=" mt10 cicle">
+         <li>申请人二代身份证</li>
+         <li>企业/商户经营场所证明材料</li>
+         <li>近6个月对公或对私银行流水或POS交易流水</li>
+       </ul>
+    </div>
+  </div>
+</div>
+
+<div th:replace="templates/footer :: footer"></div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="keywords" content="">
+<meta name="description" content="十七金融">
+<meta name="author" content="十七金融">
+<link href="../../css/css.css" rel="stylesheet">
+
+<link href="favicon.ico" rel="SHORTCUT ICON">
+<title>十七金融</title>
+</head>
+<body>
+<!--head-->
+<div class="header" th:replace="templates/header :: header"></div>
+<!--main-->
+<div class="wrap mt10 clearfix">
+  <div th:replace="templates/userleft :: userleft"></div>
+  
+  <div class="section fr">
+    <!--Security Settings-->
+    <div class="pd20 bg-w mt10 bdr">
+      <div class="crumbs"><span>完善资料</span></div>
+      <div class="safe">
+      
+      </script>
+        <table class="safe-tab">
+        <form th:action="@{/user/updateUserInfo}"  method="post">
+        <input type="hidden" name="id" th:value="${us.id}"/>
+        <input type="hidden" name="addre" id="addre" th:value="${us.address}"/>
+          <tr>
+            <th width="20%">真实姓名：</th>
+            <td width="60%"><input type="text" name="name" th:value="${us.name}"   class="input_all input_1" style="width:227px"/></td>
+            <td width="20%"><font color="red" ></font></td>
+          </tr>
+          <tr>
+            <th>所在地：</th>
+            <td>
+            	<select name="address" id="provice"   class="input_all input_1" style="width:240px;height: 30px">
+     
+            		<option th:each="u:${list}" th:value="${u.cityName}" th:text="${u.cityName}" th:selected="${us.address eq u.cityName}"></option>
+            	</select>
+            </td>
+           <td></td>
+          </tr>
+          
+          <tr>
+            <th>称谓：</th>
+            <td>
+            
+            <input type="radio" name="sex" value="1"  class="form-control" th:checked="${us.sex eq '1'}" />男士 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="sex" value="2"  class="form-control" th:checked="${us.sex eq '2'}"/>女士</td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>出生日期：</th>
+            <td>
+              <input type="text" readonly id="birthday" name="riqi" th:value="${#dates.format(us.birthday,'yyyy-MM-dd')}" class="input_all i_time input_1" style="z-index:1000;position:relative; width:210px"/>
+            </td>
+           <td></td>
+          </tr>
+          <tr>
+            <th>身份证号：</th>
+            <td><input type="text" name="carID" th:value="${us.carID}" class="input_all input_1" style="width:227px" maxlength="18"/></td>
+           <td></td>
+          </tr>
+          <tr>
+            <th>邮箱：</th>
+            <td><input type="text" name="email" th:value="${us.email}" class="input_all input_1" style="width:227px"/></td>
+           <td><font color="red" ></font></td>
+          </tr>
+          <tr>
+            <th></th>
+            <td><input type="submit" value="提交" class="btn btnSize_6 btn_orange"/><font color="green" size="5" th:text="${msg}"></font></td>
+            <td></td>
+          </tr>
+          </form>
+        </table>
+      </div>    
+      
+    </div>
+    
+  </div>
+  
+</div>
+
+<div th:replace="templates/footer :: footer"></div>
+</body>
+</html>

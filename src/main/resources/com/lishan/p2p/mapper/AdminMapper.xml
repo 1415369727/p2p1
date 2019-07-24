@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lishan.p2p.mapper.AdminMapper" >
+  <resultMap id="BaseResultMap" type="com.lishan.p2p.pojo.Admin" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="creattime" property="creattime" jdbcType="TIMESTAMP" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="rid" property="rid" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap type="com.lishan.p2p.pojo.Role" id="roleList">
+  <id column="id" property="id" jdbcType="INTEGER"/>
+  <result column="rolename" property="rolename" jdbcType="VARCHAR"/>
+  <result column="des" property="des" jdbcType="VARCHAR"/>
+	  <collection property="menu" ofType="com.lishan.p2p.pojo.Menu">
+	  	<id column="id" property="id" jdbcType="INTEGER"/>
+	  	<result column="menu" property="menu" jdbcType="VARCHAR" />
+	  	<result column="pid" property="pid" jdbcType="INTEGER" />
+	  	<result column="url" property="url" jdbcType="VARCHAR" />
+	  	<result column="des" property="des" jdbcType="VARCHAR" />
+	  	<result column="icon" property="icon" jdbcType="VARCHAR" />
+	  </collection>
+  </resultMap>
+  
+  <resultMap type="com.lishan.p2p.pojo.Menu" id="menuMap">
+  		<id column="mid" property="id" jdbcType="INTEGER"/>
+	  	<result column="mmenu" property="menu" jdbcType="VARCHAR" />
+	  	<result column="mpid" property="pid" jdbcType="INTEGER" />
+	  	<result column="murl" property="url" jdbcType="VARCHAR" />
+	  	<result column="mdes" property="des" jdbcType="VARCHAR" />
+	  	<result column="micon" property="icon" jdbcType="VARCHAR" />
+  	<collection property="lmenu" ofType="com.lishan.p2p.pojo.Menu">
+  		<id column="mlid" property="id" jdbcType="INTEGER"/>
+	  	<result column="mlmenu" property="menu" jdbcType="VARCHAR" />
+	  	<result column="mlpid" property="pid" jdbcType="INTEGER" />
+	  	<result column="mlurl" property="url" jdbcType="VARCHAR" />
+	  	<result column="mldes" property="des" jdbcType="VARCHAR" />
+	  	<result column="mlicon" property="icon" jdbcType="VARCHAR" />
+  	</collection>
+  </resultMap>
+  <resultMap type="com.lishan.p2p.pojo.Menu" id="roleMenuMap">
+  	<id column="mid" property="id" jdbcType="INTEGER"/>
+	  	<result column="mmenu" property="menu" jdbcType="VARCHAR" />
+	  	<result column="mpid" property="pid" jdbcType="INTEGER" />
+	  	<result column="murl" property="url" jdbcType="VARCHAR" />
+	  	<result column="mdes" property="des" jdbcType="VARCHAR" />
+	  	<result column="micon" property="icon" jdbcType="VARCHAR" />
+	  	<association property="rmenu" javaType="com.lishan.p2p.pojo.RoleMenu">
+	  		<id column="fid" property="id" jdbcType="INTEGER"/>
+	  		<result column="frid" property="rid" jdbcType="INTEGER"/>
+	  		<result column="fmid" property="mid" jdbcType="INTEGER"/>
+	  	</association>
+  	<collection property="lmenu" ofType="com.lishan.p2p.pojo.Menu">
+  		<id column="mlid" property="id" jdbcType="INTEGER"/>
+	  	<result column="mlmenu" property="menu" jdbcType="VARCHAR" />
+	  	<result column="mlpid" property="pid" jdbcType="INTEGER" />
+	  	<result column="mlurl" property="url" jdbcType="VARCHAR" />
+	  	<result column="mldes" property="des" jdbcType="VARCHAR" />
+	  	<result column="mlicon" property="icon" jdbcType="VARCHAR" />
+	  	<association property="rmenu" javaType="com.lishan.p2p.pojo.RoleMenu">
+	  		<id column="zid" property="id" jdbcType="INTEGER"/>
+	  		<result column="zrid" property="rid" jdbcType="INTEGER"/>
+	  		<result column="zmid" property="mid" jdbcType="INTEGER"/>
+	  	</association>
+  	</collection>
+  </resultMap>
+  <resultMap type="com.lishan.p2p.pojo.RoleMenu" id="roelMenu">
+	  		<result column="rid" property="rid" jdbcType="INTEGER"/>
+	  		<result column="mid" property="mid" jdbcType="INTEGER"/>
+  </resultMap>
+ 
+  
+ 
+  <!-- 修改菜单信息 -->
+  <update id="updateMenu" parameterType="com.lishan.p2p.pojo.Menu">
+  	update menu set menu=#{menu},pid=#{pid},url=#{url},des=#{des},icon=#{icon} where id=#{id}
+  </update>
+  <!-- 查询菜单信息 -->
+  <select id="showUpateMenus" resultType="com.lishan.p2p.pojo.Menu">
+  	select * from menu where id=#{id}
+  </select>
+  <!-- 删除中间表菜单 -->
+  <delete id="deleteRoleMenu">
+  	delete from rolemenu where mid=#{id} or mid in(select id from menu where pid=#{id})
+  </delete>
+  <!-- 删除菜单 -->
+  <delete id="deleteMenu">
+  	delete from menu where id=#{id} or pid=#{id}
+  </delete>
+  <!-- 添加菜单 -->
+  <insert id="insertMenu" parameterType="com.lishan.p2p.pojo.Menu">
+  	insert into menu(menu,pid,url,des,icon) values(#{menu},#{pid},#{url},#{des},#{icon})
+  </insert>
+  <!-- 查询父菜单 -->
+  <select id="showmenuls" resultType="com.lishan.p2p.pojo.Menu">
+  	select * from menu where pid=0
+  </select>
+  <!-- 查询菜单列表 -->
+  <select id="showSZMenu" resultType="com.lishan.p2p.pojo.Menu">
+  	select * from menu
+  </select>
+  <!-- 添加权限 -->
+  <insert id="insertNRole">
+  	insert into rolemenu(rid,mid) values
+  	<if test="ids==null">
+  		(-1,null)
+  	</if>
+  	<if test="ids!=null and ids.length > 0 ">
+  	<foreach collection="ids" item="id" separator=",">
+  		(#{rid},#{id})
+  	</foreach>
+  	</if>
+  </insert>
+  <!-- 删除rolemenu中原有的权限 -->
+  <delete id="deleteYRole">
+  	delete from rolemenu where rid=#{roleid} or rid=-1
+  </delete>
+  <!-- 删除角色 -->
+  <delete id="deleteRole">
+  	delete from role where id=#{id}
+  </delete>
+  <!--用户表权限设置为空  -->
+  <update id="updateRidnull">
+  	update admin set rid=null where rid=#{id}
+  </update>
+  <!-- 初始化密码 -->
+  <update id="updatePass">
+  	update admin set password=123456 where id=#{id}
+  </update>
+  <!-- 添加角色 -->
+  <insert id="addRole" parameterType="com.lishan.p2p.pojo.Role">
+  	insert into role(rolename,des) values(#{rolename},#{des})
+  </insert>
+  <!-- 修改角色信息 -->
+  <update id="updateRole" parameterType="com.lishan.p2p.pojo.Role">
+  	update role set rolename=#{rolename},des=#{des} where id=#{id}
+  </update>
+  <!-- 查询要修改的角色信息 -->
+  <select id="showUpateRoles" resultType="com.lishan.p2p.pojo.Role">
+  	select * from role where id=#{id}
+  </select>
+  <!-- 修改用户角色 -->
+  <update id="updateRoleid">
+  	update admin set rid=#{id} where id=#{uid}
+  </update>
+  <!-- 恢复用户 -->
+  	<update id="updateStateHuiFu">
+  	update admin set state=1 where id=#{id}
+  	</update>
+  <!-- 注销用户 -->
+  <update id="updateStateZhuXiao">
+  	update admin set state=2 where id=#{id}
+  </update>
+  <!-- 查询用户列表，设置角色 -->
+  <select id="showszRole" resultMap="BaseResultMap">
+  	select * from admin
+  </select>
+  <!-- 登陆查询菜单列表 -->
+  <select id="showMenus" resultMap="roleMenuMap">
+	select f.id mid,f.menu mmenu,f.url murl,f.icon micon,f.pid mpid,z.id mlid,z.menu mlmenu,z.url mlurl,z.icon mlicon,z.pid
+	 mlpid from
+	(SELECT m.* from menu m INNER JOIN rolemenu rm on m.id=rm.mid where m.pid=0 and rm.rid=#{rid}) as f INNER JOIN
+	(select m.* from menu m INNER JOIN rolemenu rm on m.id=rm.mid where pid!=0 and rid=#{rid}) as z on f.id=z.pid
+  	
+  </select> 
+  <!-- 查询菜单列表 -->
+  <select id="getRoleMenu" resultMap="roleMenuMap">
+  	select * from(select m.id mid,m.menu mmenu,m.pid mpid,r.rid frid,r.mid fmid from menu m left JOIN (select * from rolemenu where rid=#{id}) as r on m.id=r.mid where m.pid=0) as f INNER JOIN
+						 (select m.id mlid,m.menu mlmenu,m.pid mlpid,r.rid zrid,r.mid zmid from menu m LEFT JOIN (select * from rolemenu where rid=#{id}) as r on m.id=r.mid where m.pid!=0) as z
+	on f.mid=z.mlpid
+  </select>
+  <!-- 修改个人信息 -->
+  <update id="updateAdmin" parameterType="com.lishan.p2p.pojo.Admin">
+  update admin set username=#{username},password=#{password} where id=#{id}
+  </update>
+  <!-- 查询角色列表 -->
+  <select id="showRole" resultMap="roleList">
+  	select * from role
+  </select>
+  <!-- 添加用户 -->
+  <insert id="addAdmin" parameterType="com.lishan.p2p.pojo.Admin">
+  	insert into admin(username,password,creattime,rid) values(#{username},#{password},#{creattime},#{rid})
+  </insert>
+  <!-- 用户登陆 -->
+  <select id="adminLogin" resultMap="BaseResultMap">
+  	select * from admin where username=#{username} and password=#{password} and state=1
+  </select>
+</mapper>
